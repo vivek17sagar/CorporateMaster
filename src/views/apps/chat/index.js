@@ -1,0 +1,92 @@
+// ** Custom Hooks
+import dashboard from '@src/assets/images/icons/dashboard.png'
+import '@styles/base/pages/app-chat-list.scss'
+import '@styles/base/pages/app-chat.scss'
+// ** Styles
+import '@styles/react/apps/app-calendar.scss'
+import '@styles/react/libs/flatpickr/flatpickr.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
+// ** Third Party Components
+import classnames from 'classnames'
+// ** React Imports
+import { Fragment, useEffect, useState } from 'react'
+// ** Store & Actions
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { Breadcrumb, BreadcrumbItem, Row } from 'reactstrap'
+// ** Chat App Component Imports
+import Chat from './Chat'
+import Sidebar from './SidebarLeft'
+import { getChatContacts, getUserProfile } from './store/actions'
+import UserProfileSidebar from './UserProfileSidebar'
+
+const AppChat = () => {
+  // ** Store Vars
+  const dispatch = useDispatch()
+  const store = useSelector(state => state.chat)
+
+  // ** States
+  const [user, setUser] = useState({})
+  const [sidebar, setSidebar] = useState(false)
+  const [userSidebarRight, setUserSidebarRight] = useState(false)
+  const [userSidebarLeft, setUserSidebarLeft] = useState(false)
+
+  // ** Sidebar & overlay toggle functions
+  const handleSidebar = () => setSidebar(!sidebar)
+  const handleUserSidebarLeft = () => setUserSidebarLeft(!userSidebarLeft)
+  const handleUserSidebarRight = () => setUserSidebarRight(!userSidebarRight)
+  const handleOverlayClick = () => {
+    setSidebar(false)
+    setUserSidebarRight(false)
+    setUserSidebarLeft(false)
+  }
+
+  // ** Set user function for Right Sidebar
+  const handleUser = obj => setUser(obj)
+
+  // ** Get data on Mount
+  useEffect(() => {
+    dispatch(getChatContacts())
+    dispatch(getUserProfile())
+  }, [dispatch])
+
+  return (
+    <Fragment>
+      
+      <Sidebar
+        store={store}
+        sidebar={sidebar}
+        handleSidebar={handleSidebar}
+        userSidebarLeft={userSidebarLeft}
+        handleUserSidebarLeft={handleUserSidebarLeft}
+      />
+      <div className='content-right'>
+        <div className='content-wrapper'>
+          <div className='content-body'>
+            <div
+              className={classnames('body-content-overlay', {
+                show: userSidebarRight === true || sidebar === true || userSidebarLeft === true
+              })}
+              onClick={handleOverlayClick}
+            ></div>
+
+            <Chat
+              store={store}
+              handleUser={handleUser}
+              handleSidebar={handleSidebar}
+              userSidebarLeft={userSidebarLeft}
+              handleUserSidebarRight={handleUserSidebarRight}
+            />
+            <UserProfileSidebar
+              user={user}
+              userSidebarRight={userSidebarRight}
+              handleUserSidebarRight={handleUserSidebarRight}
+            />
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  )
+}
+
+export default AppChat

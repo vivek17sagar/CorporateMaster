@@ -1,0 +1,60 @@
+@import './base/bootstrap.scss';
+@import './base/bootstrap-extended.scss';
+@import './base/colors.scss';
+@import './base/components.scss';
+
+// Themes
+@import './base/themes/dark-layout.scss';
+@import './base/themes/bordered-layout.scss';
+@import './base/themes/semi-dark-layout.scss';
+// @import './base/custom-rtl.scss';
+
+// React Specific
+@import 'react/index';
+
+a {
+    color: inherit;
+}
+
+.default-link {
+    color: #7367f0;
+}
+
+.breadcrumb-item a {
+    color: #7367f0;
+}
+
+
+.disabled {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+}
+
+.ratio-table.react-dataTable > div {
+    width: 90%;
+}
+
+
+@keyframes blinking {
+  0% {
+    background-color: #ff3d50;
+  }
+  /* YOU CAN ADD MORE COLORS IN THE KEYFRAMES IF YOU WANT
+  50% {
+    background-color: #55d66b;
+    border: 5px solid #126620;
+  }
+  */
+  100% {
+    background-color: #222291;
+  }
+}
+.coming-soon {
+  /* NAME | TIME | ITERATION */
+  animation: blinking 1s infinite;
+  color:white
+}
+
+.hidden {
+  display: none !important;
+}

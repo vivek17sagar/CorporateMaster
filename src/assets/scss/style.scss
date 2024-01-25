@@ -1,0 +1,75 @@
+/*================================================================================
+	Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+	Version: 2.0
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+
+.claim-analytics {
+	.ratio-table .rdt_TableRow {
+		min-height: 80px;
+	}
+	.ratio-particular .rdt_TableRow {
+		min-height: 81px;
+	}
+	.bandwise-table .rdt_TableRow {
+		min-height: 60px;
+	}
+	.endorsement-tracking .rdt_TableRow {
+		max-height: 47px;
+	}
+}
+
+.react-dataTable {
+	.rdt_TableHeader {
+		padding-left: 0px !important;
+	}
+	.rdt_TableCol,
+	.rdt_TableCell {
+		padding-right: 0 !important;
+	}
+	.rdt_TableCol:not(:first-child),
+	.rdt_TableCell:not(:first-child) {
+		padding-left: 0.5rem !important;
+	}
+	.rdt_TableCol_Sortable {
+		font-weight: normal !important;
+	}
+	.rdt_TableCell > div {
+		white-space: pre-wrap !important;
+	}
+}
+
+.react-dataTable.table-striped .rdt_TableBody {
+	.rdt_TableRow:nth-child(even) {
+		background: #f5f5f5;
+	}
+}
+
+.circle {
+	width: 10px;
+	height: 10px;
+	border-radius: 10px;
+	display: inline-flex;
+}
+
+.bg-green {
+	background-color: #df87f2;
+}
+
+.bg-red {
+	background-color: #eb3411;
+}
+
+.stats-horizontal .avatar img {
+	border-radius: 0 !important;
+}
+
+.text-underline {
+	text-decoration: underline !important;
+}
