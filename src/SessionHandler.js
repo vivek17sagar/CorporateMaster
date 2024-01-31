@@ -21,6 +21,7 @@ const ToastContent = ({ name, role }) => (
 
 export const SessionHandler = (props) => {
   const { promiseInProgress } = usePromiseTracker();
+
   const dispatch = useDispatch();
   const [error, setError] = useState(false);
 
@@ -28,6 +29,7 @@ export const SessionHandler = (props) => {
     setError(false);
     return req;
   });
+
   axios.interceptors.response.use(
     (req) => {
       return req;
@@ -48,12 +50,13 @@ export const SessionHandler = (props) => {
           }, 2000);
         }
       }
-      return Promise.reject(a.response.data);
+      return Promise.reject(a?.response?.data);
     }
   );
+
   return (
     <div style={{ fontSize: "50px" }}>
-      <Modal className="modal-dialog-centered" isOpen={!!promiseInProgress}>
+      <Modal className="modal-dialog-centered" isOpen={promiseInProgress}>
         <ModalBody className="p-0">
           <div className="fallback-spinner">
             <img className="fallback-logo" src={logo} width="75" alt="logo" />

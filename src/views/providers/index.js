@@ -44,41 +44,6 @@ const Providers = () => {
     { label: "Network", value: "N" },
     { label: "Non Network", value: "NN" },
   ];
-  useEffect(() => {
-    trackPromise(apiConfig.post("/providerdashboard").then(setStatsData));
-
-    trackPromise(
-      apiConfig
-        .post("/populatecities", undefined, undefined, { orgID: "insuranceId" })
-        .then((data) => {
-          setLocation(
-            data
-              ?.map((row) => row.cityName)
-              ?.sort()
-              ?.map((row) => {
-                return {
-                  label: row,
-                  value: row,
-                };
-              })
-          );
-        })
-    );
-
-    trackPromise(
-      apiConfig.post("/populateProviderType").then((data) => {
-        setProviderTypes(
-          data?.map((row) => {
-            return {
-              ...row,
-              label: row.providerType,
-              value: row.providerTypeID,
-            };
-          })
-        );
-      })
-    );
-  }, []);
 
   const [providerData, setProviderData] = useState([]);
   // { hospitalName: 'All India Institue of Medical Science', hospitalAddress: 'Grant Road, Mumbai-400000', schedule: 'Open 24 Hrs', contact: '+91 213657895', network: 'In-Network', providerType: 'Hospital', caseTillDate: '06', activeCases: '02' },
@@ -220,6 +185,56 @@ const Providers = () => {
   const [filterChange, setFilterChnage] = useState(false);
 
   useEffect(() => {
+    trackPromise(apiConfig.post("/providerdashboard").then(setStatsData));
+
+    trackPromise(
+      apiConfig
+        .post("/populatecities", undefined, undefined, { orgID: "insuranceId" })
+        .then((data) => {
+          setLocation(
+            data
+              ?.map((row) => row.cityName)
+              ?.sort()
+              ?.map((row) => {
+                return {
+                  label: row,
+                  value: row,
+                };
+              })
+          );
+        })
+    );
+
+    trackPromise(
+      apiConfig.post("/populateProviderType").then((data) => {
+        setProviderTypes(
+          data?.map((row) => {
+            return {
+              ...row,
+              label: row.providerType,
+              value: row.providerTypeID,
+            };
+          })
+        );
+      })
+    );
+
+    return () => {
+      setStatsData({
+        activeProviderCount: 0,
+        blacklistedProviderCount: 0,
+        hospitalProviderCount: 0,
+        labProviderCount: 0,
+        clinicProviderCount: 0,
+        doctorProviderCount: 0,
+        pharmacyProviderCount: 0,
+      });
+      setLocation([]);
+      setProviderTypes([]);
+    };
+  }, []);
+
+  useEffect(() => {
     trackPromise(
       apiConfig
         .post("/activeProviderdetails", {
@@ -230,8 +245,9 @@ const Providers = () => {
           cityName: selectedLocation.value || "",
         })
         .then((data) => {
+          console.log("activeProviderdetails ==> ", data);
           if (data) {
-            data[0].then((result) => {
+            data[0]?.then((result) => {
               setProviderData(result);
             });
             setTotalPages(data[1]);

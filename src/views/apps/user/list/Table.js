@@ -118,8 +118,6 @@ const UsersList = (props, ref) => {
     (state) => state?.filter?.filterChange
   );
 
-  console.log("filterValueFromStore ==> ", filterValueFromStore);
-
   // ** States
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

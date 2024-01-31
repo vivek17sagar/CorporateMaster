@@ -76,6 +76,14 @@ const Employees = (props) => {
         setCurrentPlan({ label: "Select Plan", value: "" });
       })
     );
+    return () => {
+      setMaleCount(0);
+      setFemaleCount(0);
+      setTotalEmployees(0);
+      setSmartCardCount(0);
+      setPlansList([]);
+      setCurrentPlan({ value: "" });
+    };
   }, []);
 
   useEffect(() => {

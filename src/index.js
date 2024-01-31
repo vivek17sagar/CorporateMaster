@@ -45,8 +45,22 @@ import { setAPIData } from "./@core/api/serviceConfig";
 
 // ** Lazy load app
 const LazyApp = lazy(() => import("./App"));
+
 axios.get("/api.json").then((res) => {
-  setAPIData(res.data);
+  const isBrowser = typeof window !== "undefined";
+
+  const decideENV = () => {
+    if (isBrowser) {
+      if (window.location.hostname === "localhost") {
+        return "DEV";
+      }
+      return "PROD";
+    }
+  };
+
+  const prodObject = { url: "https://192.168.184.49" };
+  setAPIData(decideENV() === "DEV" ? res?.data : prodObject);
+
   ReactDOM.render(
     <Provider store={store}>
       <Suspense fallback={<Spinner />}>
@@ -67,4 +81,4 @@ axios.get("/api.json").then((res) => {
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
+// serviceWorker.register();
