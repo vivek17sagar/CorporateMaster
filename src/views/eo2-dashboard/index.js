@@ -27,7 +27,7 @@ import { trackPromise } from "react-promise-tracker";
 const Dashboard = (props) => {
   const context = useContext(ThemeColors);
   const [activeAdmissionsData, setActiveAdmissionsData] = useState([]);
-  const [eCardVisible, setEcardVisible] = useState(props && props.showECard);
+  const [eCardVisible, setEcardVisible] = useState(props && props?.showECard);
 
   const selectEcard = () => {
     // console.log('updating');
@@ -45,26 +45,33 @@ const Dashboard = (props) => {
   useEffect(() => {
     trackPromise(
       apiConfig.post("/activeclaims").then((data) => {
-        const totalClaims = data.reduce((a, b) => a + b.claimCount, 0);
+        const totalClaims = data?.reduce((a, b) => a + b.claimCount, 0);
         setTotalClaims(totalClaims);
       })
     );
 
     trackPromise(
       apiConfig.post("/corporateemployeecount").then((data) => {
-        setEmployeeCount(data.employeeCount);
+        setEmployeeCount(data?.employeeCount);
       })
     );
     trackPromise(
       apiConfig.post("/corporatepolicycategoriescount").then((data) => {
-        setPolicyCount(data.policyCategoriesCount);
+        setPolicyCount(data?.policyCategoriesCount);
       })
     );
     trackPromise(
       apiConfig.post("/corporateclaimpreauthcount").then((data) => {
-        setPreAuthCount(data[0].preAuthCount);
+        setPreAuthCount(data[0]?.preAuthCount);
       })
     );
+
+    return () => {
+      setTotalClaims(0);
+      setEmployeeCount(0);
+      setPolicyCount(0);
+      setPreAuthCount(0);
+    };
   }, []);
 
   useEffect(() => {
@@ -85,6 +92,9 @@ const Dashboard = (props) => {
           }
         })
     );
+    return () => {
+      setTotalCount(0);
+    };
   }, [currentPage, rowPerPage]);
 
   const renderClient = (row) => {
@@ -225,13 +235,7 @@ const Dashboard = (props) => {
 
       <Row>
         {/* Stats With Icons Horizontal */}
-        <Col
-          lg="3"
-          sm="6"
-          tag={Link}
-          to="/employees"
-          className="cursor-pointer"
-        >
+        <Col lg="3" sm="6" tag={Link} to="/employees">
           <StatsHorizontal
             icon={<Users size={21} />}
             color="primary"
@@ -239,7 +243,7 @@ const Dashboard = (props) => {
             statTitle="Employees"
           />
         </Col>
-        <Col lg="3" sm="6" tag={Link} to="/policies" className="cursor-pointer">
+        <Col lg="3" sm="6" tag={Link} to="/policies">
           <StatsHorizontal
             icon={<Copy size={21} />}
             color="success"
@@ -247,7 +251,7 @@ const Dashboard = (props) => {
             statTitle="Policy Categories"
           />
         </Col>
-        <Col lg="3" sm="6" tag={Link} to="/claims" className="cursor-pointer">
+        <Col lg="3" sm="6" tag={Link} to="/claims">
           <StatsHorizontal
             icon={<img src={claimsIcon} height="24" width="20" />}
             color="danger"

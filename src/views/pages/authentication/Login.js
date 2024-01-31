@@ -81,7 +81,6 @@ const Login = (props) => {
   const setUserCache = (res) => {
     dispatch(handleLogin(res));
 
-    console.log("--userdata", res);
     const data = res;
     // ability.update(res.data.userData.ability)
     history.push(getHomeRouteForLoggedInUser(data.role));
@@ -135,8 +134,7 @@ const Login = (props) => {
         }
       ).ciphertext.toString(crypto.CryptoJS.enc.Base64);
 
-      useJwt
-        // .login({ email: encEmail, password: encPwd })
+      useJwt // .login({ email: encEmail, password: encPwd })
         .login({ email, password: encPassword, requiredOTP })
         .then((res) => {
           if (requiredOTP === "Y") {
@@ -152,16 +150,17 @@ const Login = (props) => {
         });
     }
   };
+
   const onCaptchaChange = () => {
     setCaptchaConfirmed(true);
   };
   const illustration = skin === "dark" ? "login-v2-dark.svg" : "login-v2.svg",
     source = require(`@src/assets/images/pages/${illustration}`).default;
   const onSubmit = (data) => {
-    if (!captchaConfirmed) {
-      setError("Please complete the CAPTCHA");
-      return;
-    }
+    // if (!captchaConfirmed) {
+    //   setError("Please complete the CAPTCHA");
+    //   return;
+    // }
     login();
   };
 
@@ -201,6 +200,7 @@ const Login = (props) => {
                 <Label className="form-label" for="login-email">
                   Username
                 </Label>
+
                 <Input
                   autoFocus
                   type="text"
@@ -242,9 +242,10 @@ const Login = (props) => {
                 />
               </FormGroup>
               <FormGroup>
-                <ReCAPTCHA sitekey={captchaKey} onChange={onCaptchaChange} />
+                {/* <ReCAPTCHA sitekey={captchaKey} onChange={onCaptchaChange} /> */}
               </FormGroup>
               <span className="text-danger">{error}</span>
+
               <Button.Ripple type="submit" color="primary" block>
                 Sign in
               </Button.Ripple>

@@ -56,11 +56,13 @@ const Policies = (props) => {
 
   const [policyGenderCount, setPolicyGenderCount] = useState([]);
   const [policyCategoryData, setPolicyCategoryData] = useState([]);
-  const [selectedCat, setSelectedCat] = useState(undefined);
+  const [selectedCat, setSelectedCat] = useState(null);
+
   useEffect(() => {
     trackPromise(
       apiConfig.post("/corporatepolicycategoriesgender").then((data) => {
         setPolicyGenderCount([...data]);
+
         setSelectedCat(data[0]);
       })
     );

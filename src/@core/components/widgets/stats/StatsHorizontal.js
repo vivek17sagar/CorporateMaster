@@ -12,7 +12,7 @@ const StatsHorizontal = ({
   ...rest
 }) => {
   return (
-    <Card>
+    <Card className="cursor-pointer">
       <CardBody className={className}>
         <div className="stats-horizontal d-flex justify-content-between align-items-center">
           <div>
