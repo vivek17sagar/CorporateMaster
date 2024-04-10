@@ -9,8 +9,8 @@ export default [
       <svg
         id="claim"
         xmlns="http://www.w3.org/2000/svg"
-        width="33.403"
-        height="40.414"
+        width="24"
+        height="33"
         viewBox="0 0 33.403 40.414"
       >
         <g

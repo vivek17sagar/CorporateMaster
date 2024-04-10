@@ -58,9 +58,12 @@ axios.get("/api.json").then((res) => {
     }
   };
 
-  const prodObject = { url: "https://192.168.184.49" };
-  setAPIData(decideENV() === "DEV" ? res?.data : prodObject);
+  const prodObject = { url: "https://192.168.184.49:7201" };
+  // const prodObject = { url: "https://corporatecustomerapi.eo2cloud.com" };
 
+  // const prodObject = { url: "https://healthcopcut.gake.com" };
+  setAPIData(decideENV() === "DEV" ? res?.data : prodObject);
+  // setAPIData(prodObject);
   ReactDOM.render(
     <Provider store={store}>
       <Suspense fallback={<Spinner />}>

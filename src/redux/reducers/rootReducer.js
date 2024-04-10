@@ -14,7 +14,7 @@ import invoice from "@src/views/apps/invoice/store/reducer";
 import calendar from "@src/views/apps/calendar/store/reducer";
 import ecommerce from "@src/views/apps/ecommerce/store/reducer";
 import dataTables from "@src/views/tables/data-tables/store/reducer";
-
+import ResponsiveReducer from "./ResposiveMenuReducer/ResponsiveMenuReducer";
 const rootReducer = combineReducers({
   auth,
   todo,
@@ -28,6 +28,7 @@ const rootReducer = combineReducers({
   calendar,
   ecommerce,
   dataTables,
+  ResponsiveReducer,
 });
 
 export default rootReducer;

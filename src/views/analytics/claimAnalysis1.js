@@ -10,6 +10,7 @@ import { trackPromise } from "react-promise-tracker";
 
 const ClaimAnalysis1 = () => {
   const { colors } = useContext(ThemeColors);
+
   const tooltipShadow = "rgba(0, 0, 0, 0.25)",
     labelColor = "#6e6b7b",
     gridLineColor = "rgba(200, 200, 200, 0.2)",
@@ -137,27 +138,19 @@ const ClaimAnalysis1 = () => {
     },
   };
 
-  const [particularData, setParticularData] = useState([
-    { particular: "Data as on", values: "05 August 2015" },
-    { particular: "Policy Inception Date", values: "01 May 2015" },
-    { particular: "Policy Expiry Date", values: "30 April 2016" },
-    { particular: "Total No. of Days from policy inception", values: "96" },
-    {
-      particular:
-        "Total Claim Cost (Total Settled Amt. + Total Claimed Amt. for Outstanding)",
-      values: "1,909,138",
-    },
-    {
-      particular: "Total Premium Paid Till date (Exclusive of Taxes)",
-      values: "6,586,762",
-    },
-    { particular: "Earned Premium as on date", values: "1,732,409" },
-    { particular: "End of Policy Claim Cost", values: "7,552,005" },
-  ]);
+  const [particularData, setParticularData] = useState([]);
+
   const particularColumns = [
     { name: "PARTICULAR", selector: "particular", sortable: true },
-    { name: "VALUES", selector: "values", sortable: true, cell: () => "-" },
+    {
+      name: "VALUES",
+      selector: "values",
+      sortable: true,
+      cell: (row) => row.value,
+    },
   ];
+
+  console.log("particularData ==> ", particularData);
   const ratioSeries = [
     {
       data: [700, 350, 480],
@@ -171,6 +164,12 @@ const ClaimAnalysis1 = () => {
         .then((data) => {
           setData(data);
         })
+    );
+
+    trackPromise(
+      apiConfig.post("/corporateparticularvalue").then((data) => {
+        setParticularData(data);
+      })
     );
   }, []);
 
@@ -194,7 +193,14 @@ const ClaimAnalysis1 = () => {
           </Card>
           {/* <ApexBarChart height={200} inputSeries={ratioSeries} categories={['YTD Ratio', ['Ratio on Earned', 'Premium'], 'EOP Ratio']} title={'Claim Ratios'}></ApexBarChart> */}
         </Col>
-        <Col sm="6" lg="6">
+        <Col
+          sm="6"
+          lg="6"
+          style={{
+            overflowY: "scroll",
+            height: "600px",
+          }}
+        >
           <DataTable
             noHeader
             data={particularData}

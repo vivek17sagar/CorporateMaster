@@ -8,6 +8,7 @@ import { ActiveHealth } from "./activeHealth";
 import CommonDiseases from "./commonDiseases";
 import ECardTable from "./ecard-table";
 import Policies from "./policies";
+import { noop } from "lodash";
 import TableServerSide from "./tableServerSide";
 import claimsIcon from "@src/assets/images/icons/claims.png";
 import {
@@ -46,25 +47,26 @@ const Dashboard = (props) => {
     trackPromise(
       apiConfig.post("/activeclaims").then((data) => {
         const totalClaims = data?.reduce((a, b) => a + b.claimCount, 0);
-        setTotalClaims(totalClaims);
+
+        totalClaims && setTotalClaims(totalClaims);
       })
-    );
+    ).catch(noop);
 
     trackPromise(
       apiConfig.post("/corporateemployeecount").then((data) => {
         setEmployeeCount(data?.employeeCount);
       })
-    );
+    ).catch(noop);
     trackPromise(
       apiConfig.post("/corporatepolicycategoriescount").then((data) => {
         setPolicyCount(data?.policyCategoriesCount);
       })
-    );
+    ).catch(noop);
     trackPromise(
       apiConfig.post("/corporateclaimpreauthcount").then((data) => {
         setPreAuthCount(data[0]?.preAuthCount);
       })
-    );
+    ).catch(noop);
 
     return () => {
       setTotalClaims(0);
@@ -305,16 +307,18 @@ const Dashboard = (props) => {
             </Col>
           </Row>
           <Row>
-            <Col lg="4" sm="6">
+            <Col lg="8" sm="6">
               <CommonDiseases
                 primary={context.colors.primary.main}
                 warning={context.colors.warning.main}
                 danger={context.colors.danger.main}
               />
             </Col>
-            <Col lg="8" sm="6">
+
+            {/* Temporary Hide */}
+            {/* <Col lg="8" sm="6">
               <ActiveHealth title="Active Health Challenges" />
-            </Col>
+            </Col> */}
           </Row>
         </Fragment>
       )}

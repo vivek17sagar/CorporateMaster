@@ -8,8 +8,8 @@ export default [
       <svg
         id="insurance"
         xmlns="http://www.w3.org/2000/svg"
-        width="34.513"
-        height="45.309"
+        width="25"
+        height="30"
         viewBox="0 0 34.513 45.309"
       >
         <path

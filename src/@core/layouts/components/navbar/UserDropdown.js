@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Power,
   User,
+  Menu,
 } from "react-feather";
 // ** Store & Actions
 import { useDispatch } from "react-redux";
@@ -34,6 +35,9 @@ const UserDropdown = () => {
   // ** Store Vars
   const dispatch = useDispatch();
 
+  // Tracking width of web page
+  const [viewWidth, setViewWidth] = useState(window?.innerWidth);
+
   // ** State
   const [userData, setUserData] = useState(null);
 
@@ -44,6 +48,17 @@ const UserDropdown = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const TrackWidthAndExecute = () => {
+      setViewWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", TrackWidthAndExecute);
+    return () => {
+      window.removeEventListener("resize", TrackWidthAndExecute);
+    };
+  }, []);
+
   //** Vars
   const userAvatar = (userData && userData.avatar) || defaultAvatar;
 
@@ -51,15 +66,18 @@ const UserDropdown = () => {
 
   return (
     <Fragment>
-      <Link to="/dashboard/calendar">
-        <img src={clockify} className="mx-1" height="25" width="25" />
-      </Link>
-      {/* <MessageSquare className='mx-1 cursor-pointer' tag={Link} to='/dashboard/chat' /> */}
-      <Link to="/dashboard/chat">
-        <MessageSquare className="mx-1" />
-      </Link>
-      {/* <Bell className='ml-1 mr-5' /> */}
-      <NotificationDropdown />
+      {false && viewWidth > 991 && (
+        <>
+          {" "}
+          <Link to="/dashboard/calendar">
+            <img src={clockify} className="mx-1" height="25" width="25" />
+          </Link>
+          <Link to="/dashboard/chat">
+            <MessageSquare className="mx-1" />
+          </Link>
+          <NotificationDropdown />
+        </>
+      )}
       <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
         <DropdownToggle
           href="/"
@@ -69,6 +87,11 @@ const UserDropdown = () => {
         >
           <Avatar
             initials
+            title={
+              userData
+                ? userData.corporateName.split(" ")?.slice(0, 2).join(" ")
+                : ""
+            }
             content={
               userData
                 ? userData.corporateName.split(" ")?.slice(0, 2).join(" ")
@@ -77,20 +100,22 @@ const UserDropdown = () => {
             imgHeight="40"
             imgWidth="40"
           />
-          <div className="pl-1 user-name font-weight-bold">
-            <div>Hello,</div>
-            <div>
-              {userData && userData.corporateName}
-              <ChevronDown />
+          {viewWidth > 991 && (
+            <div className="pl-1 user-name font-weight-bold">
+              <div>Hello,</div>
+              <div>
+                {userData && userData.corporateName}
+                <ChevronDown />
+              </div>
             </div>
-          </div>
+          )}
         </DropdownToggle>
-        <DropdownMenu right>
+        <DropdownMenu style={{ maxWidth: "25%" }}>
           {/* <DropdownItem tag={Link} to={`/employees/profile/${userData ? userData.id : 1}`}>
             <User size={14} className='mr-75' />
             <span className='align-middle'>Profile</span>
           </DropdownItem> */}
-          <DropdownItem tag={Link} to="/dashboard/chat">
+          {/* <DropdownItem tag={Link} to="/dashboard/chat">
             <Mail size={14} className="mr-75" />
             <span className="align-middle">Chat</span>
           </DropdownItem>
@@ -101,7 +126,40 @@ const UserDropdown = () => {
           <DropdownItem tag={Link} to="/employees/settings">
             <MessageSquare size={14} className="mr-75" />
             <span className="align-middle">Settings</span>
-          </DropdownItem>
+          </DropdownItem> */}
+
+          {false && viewWidth <= 991 && (
+            <>
+              {/* Clock */}
+              <DropdownItem style={{ width: "100%" }}>
+                <Link to="/dashboard/calendar">
+                  <img
+                    src={clockify}
+                    className="mr-75"
+                    height="16"
+                    width="16"
+                  />
+                  <span className="align-middle">Reminder</span>
+                </Link>
+              </DropdownItem>
+
+              {/* Message   /dashboard/chat*/}
+              <DropdownItem style={{ width: "100%" }}>
+                <Link to="/dashboard/chat">
+                  <MessageSquare className="mr-75" />
+                  <span className="align-middle">Message</span>
+                </Link>
+              </DropdownItem>
+
+              {/* Notification*/}
+              <DropdownItem style={{ display: "flex", width: "100%" }}>
+                <NotificationDropdown />
+                <span className="align-middle">Notification</span>
+              </DropdownItem>
+            </>
+          )}
+
+          {/* Logout */}
           <DropdownItem
             tag={Link}
             to="/login"

@@ -27,7 +27,151 @@ import Table from "../apps/user/list/Table";
 import { apiConfig } from "../../@core/api/serviceConfig";
 import classnames from "classnames";
 import { trackPromise } from "react-promise-tracker";
-import { noop } from "jquery";
+import { noop } from "lodash";
+import location_1 from "../../assets/images/svg/location_1.png";
+import call from "../../assets/images/svg/call.png";
+import email from "../../assets/images/svg/email.png";
+import MainPaginationComponent from "./pagination";
+import {
+  Form,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  NavItem,
+  NavLink,
+  Button,
+} from "reactstrap";
+
+const CardComponent = ({ data }) => {
+  return data.map((obj) => {
+    return (
+      <Card
+        className="shadow-lg provider_individual_card"
+        key={obj?.providerName}
+        style={{
+          width: "500px",
+          height: "250px",
+          borderRadius: "1.375rem",
+        }}
+      >
+        <section style={{ width: "100%", height: "100%" }}>
+          {/* Section - 1 / Provider  Name */}
+          <div
+            className="provider_card_details_section_1"
+            style={{
+              width: "100%",
+              borderBottom: "1px solid lightgrey",
+              padding: "15px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              color: "#7b6ff1",
+            }}
+          >
+            {obj?.providerName}
+          </div>
+
+          {/* Section - 2 / Details */}
+
+          <div
+            className="provider_card_details_section_2"
+            style={{
+              height: "60%",
+              display: "grid",
+              borderBottom: "1px solid lightgray",
+              gridTemplateColumns: "1fr 1fr",
+              justifyItems: "center",
+              width: "100%",
+              gap: "20px",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                {" "}
+                {obj?.providerCity}
+              </span>
+            </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                <img src={call} alt="contact" /> {obj?.providerContactNo}
+              </span>
+            </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                {" "}
+                <img src={location_1} alt="location" />
+                {obj?.providerLocation}
+              </span>
+            </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                {" "}
+                <img src={email} alt="email" />
+                {obj?.providerEmail}
+              </span>
+            </div>
+          </div>
+        </section>
+      </Card>
+    );
+  });
+};
+
 const Providers = () => {
   const [statsData, setStatsData] = useState({
     activeProviderCount: 0,
@@ -38,8 +182,10 @@ const Providers = () => {
     doctorProviderCount: 0,
     pharmacyProviderCount: 0,
   });
+  const [deafultProviderNameValue, setDefaultProviderNameValue] = useState("");
+  const [providerName, setProviderName] = useState("");
   const [location, setLocation] = useState([]);
-  const [providerTypes, setProviderTypes] = useState([]);
+  // const [providerTypes, setProviderTypes] = useState([]);
   const netwrokOptions = [
     { label: "Network", value: "N" },
     { label: "Non Network", value: "NN" },
@@ -112,80 +258,27 @@ const Providers = () => {
   ];
 
   const [index, setIndex] = useState(0);
-  const stats = [
-    <Col className="experiment" lg="3" sm="6" key={1}>
-      <StatsHorizontal
-        icon={<img src={providersIcon} width="100%" />}
-        color="primary"
-        stats={statsData.activeProviderCount + ""}
-        statTitle="Providers"
-      />
-    </Col>,
-    <Col className="experiment" lg="3" sm="6" key={2}>
-      <StatsHorizontal
-        icon={<img src={used} height="35" width="35" />}
-        color="success"
-        stats={statsData.blacklistedProviderCount + ""}
-        statTitle="Blacklisted"
-      />
-    </Col>,
-    <Col className="experiment" lg="3" sm="6" key={3}>
-      <StatsHorizontal
-        icon={<img src={hospital} height="50" width="50" />}
-        color="danger"
-        stats={statsData.hospitalProviderCount + ""}
-        statTitle="Hospitals"
-      />
-    </Col>,
-    <Col className="experiment" lg="3" sm="6" key={4}>
-      <StatsHorizontal
-        icon={<img src={labs} height="35" width="35" />}
-        color="success"
-        stats={statsData.labProviderCount + ""}
-        statTitle="Diagnostics"
-      />
-    </Col>,
-    <Col className="experiment" lg="3" sm="6" key={5}>
-      <StatsHorizontal
-        icon={<img src={labs} height="35" width="35" />}
-        color="success"
-        stats={statsData.clinicProviderCount + ""}
-        statTitle="Clinic"
-      />
-    </Col>,
-    <Col className="experiment" lg="3" sm="6" key={6}>
-      <StatsHorizontal
-        icon={<img src={labs} height="35" width="35" />}
-        color="success"
-        stats={statsData.doctorProviderCount + ""}
-        statTitle="Doctor"
-      />
-    </Col>,
-    <Col className="experiment" lg="3" sm="6" key={7}>
-      <StatsHorizontal
-        icon={<img src={labs} height="35" width="35" />}
-        color="success"
-        stats={statsData.pharmacyProviderCount + ""}
-        statTitle="Pharmacy"
-      />
-    </Col>,
-  ];
 
   const [selectedNetwork, setSelectedNetwork] = useState({
     label: "Network",
     value: "N",
   });
-  const [selectedLocation, setSelectedLocation] = useState({});
-  const [selectedProviderType, setSelectedProviderType] = useState({});
+  const [selectedProviderType, setSelectedProviderType] = useState({
+    value: "A",
+  });
 
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCureentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const [filterChange, setFilterChnage] = useState(false);
-
+  const [changeSelectedCardColor, setSelectedCardColor] = useState("Providers");
   useEffect(() => {
-    trackPromise(apiConfig.post("/providerdashboard").then(setStatsData));
+    trackPromise(
+      apiConfig.post("/providerdashboard").then((data) => {
+        setStatsData(data);
+      })
+    ).catch(noop);
 
     trackPromise(
       apiConfig
@@ -203,21 +296,21 @@ const Providers = () => {
               })
           );
         })
-    );
+    ).catch(noop);
 
-    trackPromise(
-      apiConfig.post("/populateProviderType").then((data) => {
-        setProviderTypes(
-          data?.map((row) => {
-            return {
-              ...row,
-              label: row.providerType,
-              value: row.providerTypeID,
-            };
-          })
-        );
-      })
-    );
+    // trackPromise(
+    //   apiConfig.post("/populateProviderType").then((data) => {
+    //     setProviderTypes(
+    //       data?.map((row) => {
+    //         return {
+    //           ...row,
+    //           label: row.providerType,
+    //           value: row.providerTypeID,
+    //         };
+    //       })
+    //     );
+    //   })
+    // ).catch(noop);
 
     return () => {
       setStatsData({
@@ -230,38 +323,55 @@ const Providers = () => {
         pharmacyProviderCount: 0,
       });
       setLocation([]);
-      setProviderTypes([]);
+      // setProviderTypes([]);
     };
   }, []);
 
   useEffect(() => {
-    trackPromise(
-      apiConfig
-        .post("/activeProviderdetails", {
-          pageNo: currentPage - 1,
-          pageSize: pageSize,
-          providerCategory: selectedNetwork.value || "",
-          providerTypeID: selectedProviderType.value || "",
-          cityName: selectedLocation.value || "",
-        })
-        .then((data) => {
-          console.log("activeProviderdetails ==> ", data);
-          if (data) {
-            data[0]?.then((result) => {
-              setProviderData(result);
-            });
-            setTotalPages(data[1]);
-          }
-        })
-        .catch(() => setProviderData([]))
-    );
-  }, [
-    selectedNetwork,
-    selectedLocation,
-    selectedProviderType,
-    currentPage,
-    pageSize,
-  ]);
+    if (changeSelectedCardColor === "Blacklisted") {
+      trackPromise(
+        apiConfig
+          .post("/blacklistProviderdetails", {
+            pageNo: currentPage - 1,
+            pageSize: pageSize,
+            providerName: providerName,
+            providerTypeID: selectedProviderType?.value || "",
+          })
+          .then((data) => {
+            if (data) {
+              data[0]?.then((result) => {
+                setProviderData(result);
+              });
+              setTotalPages(data[1]);
+            } else {
+              setProviderData([]);
+            }
+          })
+          .catch(() => setProviderData([]))
+      ).catch(noop);
+    } else {
+      trackPromise(
+        apiConfig
+          .post("/activeProviderdetails", {
+            pageNo: currentPage - 1,
+            pageSize: pageSize,
+            providerName: providerName,
+            providerTypeID: selectedProviderType?.value || "",
+          })
+          .then((data) => {
+            if (data) {
+              data[0]?.then((result) => {
+                setProviderData(result);
+              });
+              setTotalPages(data[1]);
+            } else {
+              setProviderData([]);
+            }
+          })
+          .catch(() => setProviderData([]))
+      ).catch(noop);
+    }
+  }, [selectedProviderType, currentPage, pageSize, providerName]);
 
   const updatePageNumber = (pageNumber) => {
     setCureentPage(pageNumber);
@@ -287,6 +397,160 @@ const Providers = () => {
   //     }
   // }
 
+  const handleClickOnComponent = (dataFromComponent) => {
+    const providerTypeID = (() => {
+      switch (dataFromComponent) {
+        case "Providers":
+          return "A";
+
+        case "Blacklisted":
+          return "A";
+
+        case "Hospitals":
+          return "H";
+
+        case "Diagnostics":
+          return "L";
+
+        case "Pharmacy":
+          return "P";
+
+        case "Clinic":
+          return "C";
+
+        case "Doctor":
+          return "D";
+
+        case "Others":
+          return "U";
+      }
+    })();
+
+    setSelectedCardColor(dataFromComponent);
+    setSelectedProviderType({ value: providerTypeID });
+    setProviderData([]);
+    setCureentPage(1);
+  };
+
+  const handlePaginationBehaviour = (value) => {
+    setCureentPage(value);
+  };
+
+  const handleInputSearch = (event) => {
+    setDefaultProviderNameValue(event.target.value);
+  };
+
+  const handleSearchButton = () => {
+    // Here we can set the Provider name
+
+    setProviderName(deafultProviderNameValue.trim());
+  };
+  const handleRestButton = () => {
+    // Here we can reset the Provider name
+    setDefaultProviderNameValue("");
+    setProviderName("");
+
+    const input = document.getElementById("searchInput");
+    input.focus();
+  };
+  const stats = [
+    // 1
+    <Col className="experiment" lg="2" sm="6" key={1}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={providersIcon} width="100%" />}
+        color="primary"
+        stats={statsData.activeProviderCount + ""}
+        statTitle="Providers"
+      />
+    </Col>,
+
+    // 2
+    <Col className="experiment" lg="2" sm="6" key={2}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={used} height="35" width="35" />}
+        color="success"
+        stats={statsData.blacklistedProviderCount + ""}
+        statTitle="Blacklisted"
+      />
+    </Col>,
+
+    // 3
+    <Col className="experiment" lg="2" sm="6" key={3}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={hospital} height="50" width="50" />}
+        color="danger"
+        stats={statsData.hospitalProviderCount + ""}
+        statTitle="Hospitals"
+      />
+    </Col>,
+
+    // 4
+    <Col className="experiment" lg="2" sm="6" key={4}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={labs} height="35" width="35" />}
+        color="success"
+        stats={statsData.labProviderCount + ""}
+        statTitle="Diagnostics"
+      />
+    </Col>,
+
+    // 5
+    <Col className="experiment" lg="2" sm="6" key={5}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={labs} height="35" width="35" />}
+        color="success"
+        stats={statsData.clinicProviderCount + ""}
+        statTitle="Clinic"
+      />
+    </Col>,
+
+    // 6
+    <Col className="experiment" lg="2" sm="6" key={6}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={labs} height="35" width="35" />}
+        color="success"
+        stats={statsData.doctorProviderCount + ""}
+        statTitle="Doctor"
+      />
+    </Col>,
+
+    // 7
+    <Col className="experiment" lg="2" sm="6" key={7}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={labs} height="35" width="35" />}
+        color="success"
+        stats={statsData?.pharmacyProviderCount + ""}
+        statTitle="Pharmacy"
+      />
+    </Col>,
+
+    // 8
+    <Col className="experiment" lg="2" sm="6" key={8}>
+      <StatsHorizontal
+        changeSelectedCardColor={changeSelectedCardColor}
+        handleClickOnComponent={handleClickOnComponent}
+        icon={<img src={labs} height="35" width="35" />}
+        color="success"
+        stats={statsData?.pharmacyProviderCount + ""}
+        statTitle="Others"
+      />
+    </Col>,
+  ];
+
   return (
     <div>
       <Row className="justify-content-between">
@@ -303,7 +567,8 @@ const Providers = () => {
                 <img src={dashboard} width="20" height="20" />
               </Link>
             </BreadcrumbItem>
-            <BreadcrumbItem tag="li">Providers</BreadcrumbItem>
+
+            <BreadcrumbItem tag="li">Providers </BreadcrumbItem>
           </Breadcrumb>
         </div>
 
@@ -319,7 +584,7 @@ const Providers = () => {
           <span
             className={classnames(
               "cursor-pointer pl-1",
-              index === 2 && "disabled"
+              (index + 5) % stats?.length === 0 && "disabled"
             )}
             onClick={() => setIndex(index + 1)}
             style={{ fontSize: "24px" }}
@@ -328,12 +593,124 @@ const Providers = () => {
           </span>
         </div>
       </Row>
-      <Row>
+
+      <Row
+        className="search_Row"
+        style={{
+          width: "80%",
+          display: "flex",
+          alignItems: "center",
+          gap: "20px",
+          position: "relative",
+          left: "50px",
+          padding: "10px 0px",
+        }}
+      >
+        <Input
+          id="searchInput"
+          placeholder="Enter Provider Name"
+          style={{ width: "250px" }}
+          value={deafultProviderNameValue}
+          onChange={(e) => handleInputSearch(e)}
+        />
+
+        <button
+          style={{
+            outline: "none",
+            border: "none",
+            color: "#fff",
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "11px 21px",
+            borderRadius: "0.358rem",
+            backgroundColor: "#7b6ff1",
+          }}
+          onClick={handleSearchButton}
+        >
+          Search
+        </button>
+        <button
+          style={{
+            outline: "none",
+            border: "none",
+            color: "#fff",
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "11px 21px",
+            borderRadius: "0.358rem",
+            backgroundColor: "#625f6e",
+          }}
+          onClick={handleRestButton}
+        >
+          Reset
+        </button>
+      </Row>
+
+      <Row
+        className="provider_Stats"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          position: "relative",
+          left: "35px",
+        }}
+      >
         {/* Stats With Icons Horizontal */}
-        {stats?.slice(index, (index + 4) % stats.length)}
+        {stats?.slice(
+          index,
+          (index + 5) % stats?.length !== 0
+            ? (index + 5) % stats?.length
+            : stats?.length
+        )}
         {/* Stats With Icons Horizontal */}
       </Row>
-      <Card>
+      {/* Below Section Shows Details Related To The Clicked Card */}
+      <Row
+        style={{
+          display: providerData?.length > 0 && "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          overflowY: "scroll",
+          height: "560px",
+          justifyItems: "center",
+        }}
+        className="ul_ResponsiveLayout_Component provider_card"
+      >
+        {providerData?.length > 0 ? (
+          <CardComponent data={providerData} />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            No Data Found
+          </div>
+        )}
+      </Row>
+
+      {providerData?.length > 0 && (
+        <Row
+          className="pagination_component"
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            position: "relative",
+            right: "45px",
+          }}
+        >
+          <MainPaginationComponent
+            totalPages={totalPages}
+            handlePaginationBehaviour={handlePaginationBehaviour}
+            currentPage={currentPage}
+          />
+        </Row>
+      )}
+      {/* <Card>
         <CardHeader>
           <CardTitle>Search Filter</CardTitle>
         </CardHeader>
@@ -388,8 +765,8 @@ const Providers = () => {
             </Col>
           </Row>
         </CardBody>
-      </Card>
-      <Row>
+      </Card> */}
+      {/* <Row>
         <Col xs="12">
           <Table
             showFilter={false}
@@ -401,7 +778,7 @@ const Providers = () => {
             totalCount={totalPages}
           />
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 };

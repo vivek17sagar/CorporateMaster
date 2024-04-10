@@ -47,6 +47,12 @@ const PastClaims = (props) => {
           }
         })
     ).catch(noop);
+
+    trackPromise(
+      apiConfig.post("/corporateclaimrccl").then((data) => {
+        setRCCLData(data);
+      })
+    ).catch(noop);
   }, []);
 
   // This useEffect Runs when the pageNo and pageSize changes
@@ -87,7 +93,7 @@ const PastClaims = (props) => {
 
   const getRCCLOptions = () => ({
     chart: {
-      height: 400,
+      height: 300,
       type: "bar",
       stacked: true,
       parentHeightOffset: 0,
@@ -99,23 +105,28 @@ const PastClaims = (props) => {
       bar: {
         columnWidth: "15%",
         colors: {
-          backgroundBarColors: [
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-            columnColors.bg,
-          ],
+          // backgroundBarColors: [
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          //   columnColors.bg,
+          // ],
+
+          backgroundBarColors: Array.from(
+            { length: rcclData.length },
+            () => columnColors.bg
+          ),
           backgroundBarRadius: 10,
         },
       },
@@ -140,7 +151,9 @@ const PastClaims = (props) => {
       },
     },
     xaxis: {
-      categories: rcclData?.map((c) => c.monthName + " " + c.year), // ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      categories: rcclData
+        ?.map((c) => c.monthName + " " + c.year)
+        .filter(Boolean),
     },
     fill: {
       opacity: 1,
@@ -150,11 +163,13 @@ const PastClaims = (props) => {
   const getRCCLSeries = () => [
     {
       name: "Cashless",
-      data: rcclData?.map((c) => c.preAuth),
+      data: rcclData?.map((c) => {
+        return c.preAuth || 0;
+      }),
     },
     {
       name: "Reimbursement",
-      data: rcclData?.map((c) => c.reimbursement),
+      data: rcclData?.map((c) => c.reimbursement || 0),
     },
   ];
 
@@ -175,7 +190,25 @@ const PastClaims = (props) => {
                   },
                   0
                 );
-                return `${(result / 100000).toFixed(2)} Lakhs`;
+
+                const unit = (() => {
+                  let numStrLength = +(result + "").length;
+
+                  if (numStrLength < 6) {
+                    numStrLength = 6;
+                  }
+
+                  switch (numStrLength) {
+                    case 6: {
+                      return { divider: 1000, unit: "K" };
+                    }
+
+                    default:
+                      return { divider: 1000000, unit: "Mn" };
+                  }
+                })();
+
+                return `${(result / unit?.divider).toFixed(3)} ${unit?.unit}`;
               },
             },
           },
@@ -207,7 +240,9 @@ const PastClaims = (props) => {
   });
 
   const getDonutSeries = () =>
-    diseases?.map((d) => Number(d?.amount?.replace(/,/g, "")));
+    diseases?.map((d) => {
+      return Number(d?.amount?.replace(/,/g, ""));
+    });
 
   const onFilterChange = (filters) => {
     setCureentPage(1);
@@ -226,27 +261,32 @@ const PastClaims = (props) => {
     //     })
     // );
 
-    trackPromise(apiConfig.post("/corporateclaimrccl").then(setRCCLData));
+    // trackPromise(
+    //   apiConfig.post("/corporateclaimrccl").then((data) => {
+    //     setRCCLData(data);
+    //   })
+    // );
   };
-
   return (
     <div>
       <FilterPanel onFilterChange={onFilterChange}></FilterPanel>
       <Row>
         <Col xs="12" lg="6">
-          <Card>
-            <CardHeader className="d-flex flex-md-row flex-column justify-content-md-between justify-content-start align-items-md-center align-items-start">
-              <CardTitle tag="h4">Cashless vs Reimbursement Claims</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <Chart
-                options={getRCCLOptions()}
-                series={getRCCLSeries()}
-                type="bar"
-                height={300}
-              />
-            </CardBody>
-          </Card>
+          {rcclData.length > 0 && (
+            <Card>
+              <CardHeader className="d-flex flex-md-row flex-column justify-content-md-between justify-content-start align-items-md-center align-items-start">
+                <CardTitle tag="h4">Cashless vs Reimbursement Claims</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <Chart
+                  options={getRCCLOptions()}
+                  series={getRCCLSeries()}
+                  type="line"
+                  height={300}
+                />
+              </CardBody>
+            </Card>
+          )}
         </Col>
         <Col sm="12" lg="6">
           <Card>

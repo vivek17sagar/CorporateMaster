@@ -89,7 +89,7 @@ export const ActiveHealth = ({ title }) => {
     );
   });
   return (
-    <Card>
+    <Card style={{ display: "none" }}>
       <CardHeader className="d-flex justify-content-between">
         <CardTitle>{title}</CardTitle>
         <CardTitle className="coming-soon p-1 rounded-pill">

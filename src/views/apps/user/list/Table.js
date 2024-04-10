@@ -190,7 +190,6 @@ const UsersList = (props, ref) => {
   const CustomPagination = () => {
     const count = Number(Math.ceil(props?.totalCount / rowsPerPage));
 
-    console.log();
     return (
       <ReactPaginate
         previousLabel={""}
