@@ -5,6 +5,7 @@ import { ChevronDown } from "react-feather";
 import { Card, CardBody, CardHeader, CardTitle, Col, Row } from "reactstrap";
 import { apiConfig } from "../../@core/api/serviceConfig";
 import { trackPromise } from "react-promise-tracker";
+import { noop } from "lodash";
 
 const GenderGraphTile = (props) => {
   const options = {
@@ -223,7 +224,7 @@ const Demographics1 = (props) => {
         );
         setSeries(current?.map((c) => c.currentMemberCount));
       })
-    );
+    ).catch(noop);
   }, []);
 
   return (
@@ -233,7 +234,7 @@ const Demographics1 = (props) => {
           <Card>
             <CardHeader>
               <CardTitle tag="h3">
-                Relationship Wise Composition of covered members
+                Relationship Wise Composition Of Covered Members
               </CardTitle>
             </CardHeader>
             {/* <CardBody> */}
@@ -264,7 +265,7 @@ const Demographics1 = (props) => {
           <Card>
             <CardHeader>
               <CardTitle tag="h3">
-                Gender Wise Composition of covered members
+                Gender Wise Composition Of Covered Members
               </CardTitle>
             </CardHeader>
             {/* <CardBody className='p-2'> */}
@@ -282,7 +283,7 @@ const Demographics1 = (props) => {
         </Col>
 
         <Col xs="12" lg="6">
-          <Card>
+          <Card style={{ display: "none", border: "1px solid red" }}>
             <CardBody>
               {genderData?.map((count, index) => {
                 return (

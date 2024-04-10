@@ -491,7 +491,7 @@
       .show {
         .dropdown-menu {
           right: 0;
-          left: 0 !important;
+          // left: 0 !important;
           float: none;
           width: auto !important;
           margin-top: 0;
@@ -553,6 +553,10 @@
       }
     }
   }
+}
+
+.ul_ResponsiveLayout_Component::-webkit-scrollbar {
+  display: none;
 }
 
 // For Medium and down: iPad support for navbr
@@ -668,3 +672,14 @@
     }
   }
 }
+
+@media (max-width: 991px){
+  ul.navbar-nav li > a.nav-link{
+    transition: all 1s ease-in-out !important;
+    padding-left: 0px !important;
+  }
+}
+
+
+
+

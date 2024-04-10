@@ -152,7 +152,7 @@ const Demographics2 = (props) => {
         <Col xs="12" lg="6">
           <Card>
             <CardHeader>
-              <CardTitle>Composition of covered members</CardTitle>
+              <CardTitle>Composition of Covered Members</CardTitle>
             </CardHeader>
             {/* <CardBody> */}
             <DataTable
@@ -168,20 +168,24 @@ const Demographics2 = (props) => {
         <Col xs="12" lg="6">
           <DemographicSpouseRatio />
         </Col>
+
+        {/* Age-Band wise distribution of covered spouses */}
         <Col xs="12" md="6">
           <ApexBarChart
             height={245}
             categories={coveredSpouseAgeGroups}
             inputSeries={coveredSpouseAgeGroupData}
-            title={"Age-band wise distribution of covered spouses"}
+            title={"Age-Band Wise Distribution Of Covered Spouses"}
           ></ApexBarChart>
         </Col>
+
+        {/* Age-Band wise distribution of covered employees */}
         <Col xs="12" md="6">
           <ApexBarChart
             height={245}
             categories={coveredEmpAgeGroups}
             inputSeries={coveredEmpAgeGroupData}
-            title={"Age-band wise distribution of covered employees"}
+            title={"Age-Band Wise Distribution Of Covered Employees"}
           ></ApexBarChart>
         </Col>
       </Row>

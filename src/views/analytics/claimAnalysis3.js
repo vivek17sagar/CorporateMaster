@@ -9,6 +9,7 @@ import Chart from "react-apexcharts";
 import LineChart from "../charts/recharts/LineChart";
 import { apiConfig } from "../../@core/api/serviceConfig";
 import { trackPromise } from "react-promise-tracker";
+import { noop } from "lodash";
 
 const ClaimAnalysis3 = () => {
   const [bandWiseClaimData, setBandWiseClaimsData] = useState([]);
@@ -50,21 +51,32 @@ const ClaimAnalysis3 = () => {
     },
   ];
   const relationWiseClaimsColumns = [
-    { name: "RELATIONSHIP", selector: "relationShipDesc", sortable: true },
+    {
+      name: "RELATIONSHIP",
+      selector: "relationShipDesc",
+      sortable: true,
+      center: true,
+    },
     {
       name: "NO. OF CLAIMS",
       selector: "claimCount",
       sortable: true,
       center: true,
+      cell: (row) => (
+        <Row>
+          <div>{row.claimCount}</div>{" "}
+        </Row>
+      ),
     },
     {
       name: "CLAIM COST",
       selector: "cost",
       sortable: true,
-      style: { "justify-content": "end" },
+      center: true,
+      style: { "justify-content": "center" },
       cell: (row) => (
-        <Row className="justify-content-end w-50">
-          <div>{row.claimAmount}</div>
+        <Row>
+          <div>{row.claimAmount}</div>{" "}
         </Row>
       ),
     },
@@ -216,13 +228,13 @@ const ClaimAnalysis3 = () => {
     return [
       {
         name: JSON.parse(localStorage.getItem("userData")).corporateName,
-        data: bandWiseClaimData.map((e) =>
+        data: bandWiseClaimData?.map((e) =>
           Number(e.cmpClaimAmount.toString().replace(/,/g, ""))
         ),
       },
       {
         name: "Industry",
-        data: bandWiseClaimData.map((e) =>
+        data: bandWiseClaimData?.map((e) =>
           Number(e.indClaimAmount.toString().replace(/,/g, ""))
         ),
       },
@@ -234,12 +246,12 @@ const ClaimAnalysis3 = () => {
     // debugger;
     return [
       {
-        name: JSON.parse(localStorage.getItem("userData")).corporateName,
-        data: bandWiseClaimData.map((e) => e.cmpCount),
+        name: JSON.parse(localStorage.getItem("userData"))?.corporateName,
+        data: bandWiseClaimData?.map((e) => e.cmpCount),
       },
       {
         name: "Industry",
-        data: bandWiseClaimData.map((e) => e.indCount),
+        data: bandWiseClaimData?.map((e) => e.indCount),
       },
     ];
   };
@@ -302,6 +314,7 @@ const ClaimAnalysis3 = () => {
       opacity: 1,
     },
   });
+
   const averageClaimChartOptions2Column = () => ({
     chart: {
       type: "bar",
@@ -347,8 +360,11 @@ const ClaimAnalysis3 = () => {
       },
     },
     xaxis: {
-      categories: bandWiseClaimData?.map((x) => x.claimCost),
+      categories: bandWiseClaimData?.map((x) => {
+        return x?.claimCost;
+      }),
     },
+
     fill: {
       opacity: 1,
     },
@@ -366,9 +382,9 @@ const ClaimAnalysis3 = () => {
       name: "CLAIM AMOUNT",
       selector: "cost",
       sortable: true,
-      style: { "justify-content": "end" },
+      style: { "justify-content": "center" },
       cell: (row) => (
-        <Row className="justify-content-end w-50">
+        <Row className="w-50">
           <div>{row.cmpClaimAmount}</div>
         </Row>
       ),
@@ -381,7 +397,6 @@ const ClaimAnalysis3 = () => {
       apiConfig
         .post("/dashboardclaimrelationwise", { policyNo: "" })
         .then((data) => {
-          // console.log('--relationwise claim', data);
           setRelationWiseClaimsData(data);
         })
     );
@@ -390,8 +405,8 @@ const ClaimAnalysis3 = () => {
         apiConfig.post("/corporateclaimcountbycost"),
         apiConfig.post("/corporateclaimcountbycostall"),
       ]).then(([company, industry]) => {
-        const x = industry.map((ind) => {
-          const matchingCompanyObj = company.find(
+        const x = industry?.map((ind) => {
+          const matchingCompanyObj = company?.find(
             (c) => c.claimCost == ind.claimCost
           );
           return {
@@ -405,9 +420,20 @@ const ClaimAnalysis3 = () => {
           };
         });
         // console.log('---cost all', x);
+
+        if (x === undefined) {
+          setBandWiseClaimsData([]);
+          return;
+        }
+
         setBandWiseClaimsData(x);
       })
-    );
+    ).catch(noop);
+
+    return () => {
+      setRelationWiseClaimsData([]);
+      setBandWiseClaimsData([]);
+    };
   }, []);
 
   return (
@@ -416,7 +442,7 @@ const ClaimAnalysis3 = () => {
         <Col xs="12" lg="6">
           <Card>
             <CardHeader>
-              <CardTitle tag="h3">Relationship wise Claim Analysis</CardTitle>
+              <CardTitle tag="h3">Relationship Wise Claim Analysis</CardTitle>
             </CardHeader>
             <DataTable
               noHeader

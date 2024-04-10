@@ -74,6 +74,7 @@ const Endorsement = () => {
         data && setEndorsementMemberType(data);
       })
     ).catch(noop);
+
     trackPromise(
       apiConfig
         .post("/corporateendorsmentmembermonthcount")
@@ -81,7 +82,7 @@ const Endorsement = () => {
         .catch((error) => {
           console.log(error);
         })
-    );
+    ).catch(noop);
   }, []);
 
   // Running Table Api when pageNumber get Chnages

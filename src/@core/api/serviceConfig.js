@@ -112,7 +112,6 @@ export const apiConfig = {
     });
   },
   post: (path, form, header, localStorageMap, options) => {
-    // console.log('post call', path);
     const formData = new FormData();
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (!options || !options.ignoreDefaults) {
@@ -130,6 +129,7 @@ export const apiConfig = {
       formData.append(key, form[key]);
     }
     // form.append('userID', )
+
     return axios
       .post(`${getAPIData().url}${path}`, formData, {
         headers: {
@@ -142,6 +142,15 @@ export const apiConfig = {
         if (options && options.returnFull) {
           return parseEncryptedData(response.data.result).then((result) => {
             // debugger;
+
+            if (
+              path === "/dashboardemployeespouseratio" ||
+              path === "/dashboardemployeechildratio" ||
+              path === "/dashboardemployeedependentratio"
+            ) {
+              console.log(path, form, header, localStorageMap, options);
+            }
+
             return { ...response.data, result };
           });
         } else {

@@ -9,6 +9,8 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
+  Row,
+  Col,
 } from "reactstrap";
 import Chart from "react-apexcharts";
 import { Circle } from "react-feather";
@@ -108,6 +110,11 @@ const CommonDiseases = (props) => {
           }
         })
     );
+
+    return () => {
+      setDiseases([]);
+      setSeries([]);
+    };
   }, []);
 
   const getOptions = () => {
@@ -131,37 +138,49 @@ const CommonDiseases = (props) => {
           </DropdownMenu>
         </UncontrolledDropdown> */}
       </CardHeader>
-      <CardBody className="mb-1">
-        <Chart
-          options={getOptions()}
-          series={series}
-          type="radialBar"
-          height={265}
-        />
-        {diseases?.map((elem, index) => {
-          return (
-            <div
-              className="d-flex justify-content-between my-1"
-              key={Math.floor(Math.random() * 1000000)}
-            >
-              <div className="d-flex align-items-center text-truncate">
-                <Circle size={15} style={{ color: options.colors[index] }} />
-                <span
-                  className="font-weight-bold mx-75"
-                  title={elem.disease}
-                  style={{
-                    fontSize: "12px",
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                  }}
+      <CardBody>
+        <Row>
+          <Col>
+            {" "}
+            <Chart
+              options={getOptions()}
+              series={series}
+              type="radialBar"
+              height={265}
+            />
+          </Col>
+
+          <Col>
+            {" "}
+            {diseases?.map((elem, index) => {
+              return (
+                <div
+                  className="d-flex justify-content-between my-1"
+                  key={Math.floor(Math.random() * 1000000)}
                 >
-                  {elem.icdcode} {elem.disease}
-                </span>
-              </div>
-              <span>{elem.occurances}</span>
-            </div>
-          );
-        })}
+                  <div className="d-flex align-items-center text-truncate">
+                    <Circle
+                      size={15}
+                      style={{ color: options.colors[index] }}
+                    />
+                    <span
+                      className="font-weight-bold mx-75"
+                      title={elem.disease}
+                      style={{
+                        fontSize: "12px",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {elem.icdcode} {elem.disease}
+                    </span>
+                  </div>
+                  <span>{elem.occurances}</span>
+                </div>
+              );
+            })}
+          </Col>
+        </Row>
 
         {/* <div className='d-flex justify-content-between mb-1'>
             <div className='d-flex align-items-center'>

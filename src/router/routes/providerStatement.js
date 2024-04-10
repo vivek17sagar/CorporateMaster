@@ -1,11 +1,11 @@
-import { lazy } from 'react'
+import { lazy } from "react";
 
 const ProviderStatementRoutes = [
-    {
-        path: '/providerStatement',
-        component: lazy(() => import('../../views/providerStatement')),
-        exact: true
-    },
-]
+  {
+    path: "/providerStatement",
+    component: lazy(() => import("../../views/providerStatement")),
+    exact: true,
+  },
+];
 
-export default ProviderStatementRoutes
+export default ProviderStatementRoutes;

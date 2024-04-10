@@ -18,3 +18,81 @@
     border-bottom-right-radius: $progress-border-radius;
   }
 }
+
+
+  
+// Below css for Provider Page
+
+.MuiStack-root nav ul li button{
+  border:none !important;
+  border-radius: 50px !important;
+  outline:none !important;
+}
+
+@media (max-width: 425px){
+  #searchInput{
+    width: 100% !important;
+    padding:20px !important;
+  }
+  .search_Row{
+    width: 100% !important;
+    left:15px !important;
+    justify-content: center !important;
+ }
+}
+
+
+@media (max-width: 1200px){
+  .provider_card{
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .provider_individual_card{
+    width: 450px !important;
+          height: 250px !important;
+  }
+}
+
+
+@media (max-width: 991px){
+
+  .provider_Stats{
+    left: 0 !important;
+  }
+  .provider_card{
+    overflow-x: scroll;
+    grid-template-columns: 1fr !important;
+  }
+
+  .provider_individual_card{
+    width: 500px !important;
+          height: 250px !important;
+  }
+}
+
+
+@media (max-width: 425px){
+
+  .pagination_component{
+    justify-content: center !important;
+    right: 0 !important;
+  }
+
+  .provider_card_details_section_2{
+   display: flex !important;
+   flex-direction: column !important;
+  }
+
+  .provider_card_details_section_1{
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .provider_individual_card{
+    width: 450px !important;
+          height: 250px !important;
+  }
+}
+
+
+

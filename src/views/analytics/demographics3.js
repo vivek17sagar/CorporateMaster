@@ -4,6 +4,7 @@ import { trackPromise } from "react-promise-tracker";
 import { Card, CardBody, CardHeader, CardTitle, Col, Row } from "reactstrap";
 import { apiConfig } from "../../@core/api/serviceConfig";
 import ApexBarChart from "../charts/apex/ApexBarChart";
+import { noop } from "lodash";
 
 const Demographics3 = (props) => {
   const { colors } = useContext(ThemeColors);
@@ -25,7 +26,7 @@ const Demographics3 = (props) => {
 
   const [data, setData] = useState([
     {
-      data: [275, 90, 190, 205, 125, 85, 55, 87, 127, 150],
+      data: [275, 90, 190, 205, 125, 85, 55, 100, 100, 100],
     },
   ]);
   const series = [
@@ -50,6 +51,7 @@ const Demographics3 = (props) => {
             };
           }
         });
+
         const ageGroups = Object.entries(groups)?.map(([key, value]) => {
           return {
             ageGroup: key,
@@ -68,7 +70,7 @@ const Demographics3 = (props) => {
         );
         setData([{ data: ageGroups.map((x) => x.total) }]);
       })
-    );
+    ).catch(noop);
   }, []);
 
   const [inputOptions, setInputOptions] = useState({
@@ -151,7 +153,7 @@ const Demographics3 = (props) => {
       <Row>
         <Col xs="12" lg="6">
           <ApexBarChart
-            title="Composition of covered members"
+            title="Composition Of Covered Members"
             inputOptions={inputOptions}
             inputSeries={data}
             height={520}
@@ -164,13 +166,13 @@ const Demographics3 = (props) => {
               height={150}
               inputSeries={coveredChildAgeGroupData}
               categories={coveredChildAgeGroups}
-              title={"Age-band wise distrbution of covered children"}
+              title={"Age-Band Wise Distrbution Of Covered Children"}
             ></ApexBarChart>
           ) : (
             <Card>
               <CardHeader>
                 <CardTitle>
-                  Age-band wise distrbution of covered children
+                  Age-Band Wise Distrbution Of Covered Children
                 </CardTitle>
               </CardHeader>
               <CardBody className="justify-content-center d-flex">
@@ -182,9 +184,9 @@ const Demographics3 = (props) => {
             height={150}
             inputSeries={coveredDepAgeGroupData}
             categories={coveredDepAgeGroups}
-            title={"Age-band wise distrbution of covered Dependents"}
+            title={"Age-Band Wise Distrbution Of Covered Dependents"}
           ></ApexBarChart>
-          {/* <ApexBarChart height={250} categories={['36-45 Years', '46-55 Years', '56-65 Years', '66-70 Years', '70 Years & above'].reverse()} title={'Age-band wise distrbution of covered Parents'}></ApexBarChart> */}
+          {/* <ApexBarChart height={250} categories={['36-45 Years', '46-55 Years', '56-65 Years', '66-70 Years', '70 Years & above'].reverse()} title={'Age-Band wise distrbution of covered Parents'}></ApexBarChart> */}
         </Col>
       </Row>
     </Fragment>

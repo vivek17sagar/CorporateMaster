@@ -1,6 +1,7 @@
 import { ThemeColors } from "@src/utility/context/ThemeColors";
 import { Fragment, useContext, useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import { noop } from "lodash";
 import { ChevronDown } from "react-feather";
 import { Card, CardBody, CardHeader, CardTitle, Col, Row } from "reactstrap";
 import { Bar } from "react-chartjs-2";
@@ -224,7 +225,7 @@ const ClaimAnalysis4 = () => {
             setTotalPages(data[1]);
           }
         })
-    );
+    ).catch(noop);
   }, [currentPage, pageSize]);
 
   const updatePageNumber = (pageNumber) => {
