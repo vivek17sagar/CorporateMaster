@@ -17,6 +17,13 @@ const PastClaims = (props) => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCureentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const colors = [
+    props?.danger,
+    props?.primary,
+    props?.success,
+    props?.warning,
+  ];
   const [filter, setFilter] = useState({
     memberShipNo: "",
     employeeCode: "",
@@ -53,6 +60,11 @@ const PastClaims = (props) => {
         setRCCLData(data);
       })
     ).catch(noop);
+
+    return () => {
+      setRCCLData([]);
+      setDiseases([]);
+    };
   }, []);
 
   // This useEffect Runs when the pageNo and pageSize changes
@@ -74,6 +86,10 @@ const PastClaims = (props) => {
           setPastClaimsData([]);
         })
     );
+    return () => {
+      setPastClaimsData([]);
+      setTotalPages(0);
+    };
   }, [filter, currentPage, pageSize]);
 
   const updatePageNumber = (pageNumber) => {
@@ -88,13 +104,11 @@ const PastClaims = (props) => {
   const columnColors = {
     series1: "#826af9",
     series2: "#d2b0ff",
-    bg: "#f8d3ff",
+    bg: "#ffff",
   };
 
   const getRCCLOptions = () => ({
     chart: {
-      height: 300,
-      type: "bar",
       stacked: true,
       parentHeightOffset: 0,
       toolbar: {
@@ -124,15 +138,14 @@ const PastClaims = (props) => {
           // ],
 
           backgroundBarColors: Array.from(
-            { length: rcclData.length },
+            { length: rcclData?.length },
             () => columnColors.bg
           ),
-          backgroundBarRadius: 10,
         },
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
     },
     legend: {
       position: "top",
@@ -151,98 +164,112 @@ const PastClaims = (props) => {
       },
     },
     xaxis: {
-      categories: rcclData
-        ?.map((c) => c.monthName + " " + c.year)
-        .filter(Boolean),
+      categories:
+        rcclData.length > 0
+          ? rcclData?.map((c) => c.monthName + " " + c.year).filter(Boolean)
+          : ["Mar 2024"],
     },
     fill: {
       opacity: 1,
     },
   });
-
   const getRCCLSeries = () => [
     {
       name: "Cashless",
-      data: rcclData?.map((c) => {
-        return c.preAuth || 0;
-      }),
+      data:
+        rcclData?.length > 0
+          ? rcclData?.map((c) => {
+              return c.preAuth || 0;
+            })
+          : 0,
     },
     {
       name: "Reimbursement",
-      data: rcclData?.map((c) => c.reimbursement || 0),
+      data:
+        rcclData?.length > 0
+          ? rcclData?.map((c) => {
+              return c.reimbursement || 0;
+            })
+          : 0,
     },
   ];
 
-  const getUtilizationOptions = () => ({
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "70%",
-          labels: {
-            show: true,
-            total: {
+  const getDonutSeries = () => {
+    if (diseases && diseases.length > 0) {
+      return diseases.map((d) => {
+        return Number(d?.amount?.replace(/,/g, ""));
+      });
+    }
+
+    // If diseases is not properly initialized or empty, return default values
+    return [57000, 520000, 800000, 30000];
+  };
+
+  const getUtilizationOptions = () => {
+    return {
+      chart: {
+        type: "donut",
+        height: 300,
+      },
+      labels:
+        diseases.length > 0
+          ? diseases?.map((d) => {
+              return " " + d.icdcode + "  " + d.disease;
+            })
+          : ["Team A", "Team B", "Team C", "Team D"],
+      series: getDonutSeries(),
+
+      // plotOptions: {
+      //   pie: {
+      //     donut: {
+      //       size: "70%",
+      //     },
+      //   },
+      // },
+      dataLabels: {
+        enabled: false,
+      },
+      legend: {
+        position: "bottom",
+      },
+      tooltip: {
+        enabled: false,
+      },
+      colors: colors,
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "70%",
+            labels: {
               show: true,
-              label: "Total Claim Amount",
-              formatter: (w) => {
-                const result = w?.globals?.seriesTotals?.reduce(
-                  (sum, newVal) => {
-                    return sum + newVal;
-                  },
-                  0
-                );
+              total: {
+                show: true,
+                label: "Total Claim Amount",
+                formatter: function (w) {
+                  const seriesTotals = w?.globals?.seriesTotals;
 
-                const unit = (() => {
-                  let numStrLength = +(result + "").length;
-
-                  if (numStrLength < 6) {
-                    numStrLength = 6;
+                  if (!seriesTotals || !Array.isArray(seriesTotals)) {
+                    return "N/A";
                   }
 
-                  switch (numStrLength) {
-                    case 6: {
-                      return { divider: 1000, unit: "K" };
-                    }
+                  const result = seriesTotals.reduce(
+                    (sum, newVal) => sum + newVal,
+                    0
+                  );
+                  const unit =
+                    result < 1000000
+                      ? { divider: 1000, unit: "K" }
+                      : { divider: 1000000, unit: "Mn" };
 
-                    default:
-                      return { divider: 1000000, unit: "Mn" };
-                  }
-                })();
-
-                return `${(result / unit?.divider).toFixed(3)} ${unit?.unit}`;
+                  return `${(result / unit.divider).toFixed(3)} ${unit.unit}`;
+                },
               },
             },
           },
         },
       },
-    },
-    chart: {
-      toolbar: {
-        show: false,
-      },
-    },
-
-    labels: diseases?.map((d) => " " + d.icdcode + "  " + d.disease), // ['Hospitalization', 'Medicine', 'Maternity', 'Pathology'],
-    dataLabels: {
-      enabled: false,
-      // formatter(val, opt) {
-      //     return `${parseInt(val)}`
-      // }
-    },
-
-    legend: { show: true, position: "bottom" },
-    stroke: { width: 0 },
-    colors: [
-      props.primary,
-      columnColors.series1,
-      columnColors.series2,
-      columnColors.bg,
-    ],
-  });
-
-  const getDonutSeries = () =>
-    diseases?.map((d) => {
-      return Number(d?.amount?.replace(/,/g, ""));
-    });
+    };
+  };
 
   const onFilterChange = (filters) => {
     setCureentPage(1);
@@ -267,6 +294,7 @@ const PastClaims = (props) => {
     //   })
     // );
   };
+
   return (
     <div>
       <FilterPanel onFilterChange={onFilterChange}></FilterPanel>
@@ -281,7 +309,7 @@ const PastClaims = (props) => {
                 <Chart
                   options={getRCCLOptions()}
                   series={getRCCLSeries()}
-                  type="line"
+                  type="bar"
                   height={300}
                 />
               </CardBody>
@@ -298,7 +326,7 @@ const PastClaims = (props) => {
                 options={getUtilizationOptions()}
                 series={getDonutSeries()}
                 type="donut"
-                height={320}
+                height={322}
               />
             </CardBody>
           </Card>

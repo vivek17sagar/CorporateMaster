@@ -58,10 +58,13 @@ axios.get("/api.json").then((res) => {
     }
   };
 
-  const prodObject = { url: "https://192.168.184.49:7201" };
+  // const prodObject = { url: "https://192.168.184.49:7201" };
+
+  // Demo Link for oxegen
   // const prodObject = { url: "https://corporatecustomerapi.eo2cloud.com" };
 
-  // const prodObject = { url: "https://healthcopcut.gake.com" };
+  // Main Link
+  const prodObject = { url: "https://healthcopcut.gake.com:7201" };
   setAPIData(decideENV() === "DEV" ? res?.data : prodObject);
   // setAPIData(prodObject);
   ReactDOM.render(

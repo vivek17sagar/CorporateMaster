@@ -85,47 +85,12 @@ const Employees = (props) => {
       setCurrentPlan({ value: "" });
     };
   }, []);
-
   useEffect(() => {
-    setPageNo(1);
-  }, [currentPlan, currentScheme, empName, empCode]);
-
-  useEffect(() => {
-    trackPromise(
-      apiConfig
-        .post(
-          "/corporateemployees",
-          {
-            pageNo: pageNo - 1,
-            pageSize: perPage,
-            planID: currentPlan?.value,
-            employeeCode: empCode,
-            employeeName: empName,
-            schemeID: currentScheme?.value,
-          },
-          undefined,
-          undefined,
-          { returnFull: true }
-        )
-        .then((data) => {
-          // console.log('--employees', data);
-
-          setData(data?.result);
-          setTotalCount(data?.totalPages);
-        })
-        .catch(() => {
-          setTotalCount(0);
-          setData([]);
-        })
-    );
-  }, [currentPlan, currentScheme, empName, empCode, pageNo, perPage]);
-
-  useEffect(() => {
-    if (currentPlan.value) {
+    if (currentPlan?.value) {
       trackPromise(
         apiConfig
           .post("/schemes", {
-            planID: currentPlan.value,
+            planID: currentPlan?.value,
           })
           .then((data) => {
             setSchemesList(
@@ -146,7 +111,49 @@ const Employees = (props) => {
     } else {
       setSchemesList([]);
     }
-  }, [currentPlan]);
+  }, [currentPlan?.value]);
+
+  // useEffect(() => {
+  //   setPageNo(1);
+  // }, [empName, empCode]);
+
+  useEffect(() => {
+    trackPromise(
+      apiConfig
+        .post(
+          "/corporateemployees",
+          {
+            pageNo: pageNo - 1,
+            pageSize: perPage,
+            planID: currentPlan?.value,
+            employeeCode: empCode,
+            employeeName: empName,
+            schemeID:
+              currentPlan?.label !== "Select Plan" ? currentScheme?.value : "",
+          },
+          undefined,
+          undefined,
+          { returnFull: true }
+        )
+        .then((data) => {
+          // console.log('--employees', data);
+
+          setData(data?.result);
+          setTotalCount(data?.totalPages);
+        })
+        .catch(() => {
+          setTotalCount(0);
+          setData([]);
+        })
+    );
+  }, [
+    currentPlan?.value,
+    currentScheme?.value,
+    empName,
+    empCode,
+    pageNo,
+    perPage,
+  ]);
 
   const history = useHistory();
 
@@ -160,7 +167,6 @@ const Employees = (props) => {
   };
 
   const updateRowData = (rowPerPage) => {
-    console.log("rowPerPage ==> ", rowPerPage);
     setPerPage(1);
     setPageNo(rowPerPage);
   };
@@ -243,6 +249,7 @@ const Employees = (props) => {
                         value={empName}
                         onChange={(e) => {
                           setEmpName(e.target.value);
+                          setPageNo(1);
                           dispatch(handleFilterTabs(true));
                         }}
                       />
@@ -254,7 +261,10 @@ const Employees = (props) => {
                       <Input
                         name="name"
                         value={empCode}
-                        onChange={(e) => setEmpCode(e.target.value)}
+                        onChange={(e) => {
+                          setEmpCode(e.target.value);
+                          setPageNo(1);
+                        }}
                       />
                     </FormGroup>
                   </Col>
@@ -268,7 +278,13 @@ const Employees = (props) => {
                         classNamePrefix="select"
                         options={plansList}
                         value={currentPlan}
-                        onChange={setCurrentPlan}
+                        onChange={(data) => {
+                          if (data?.label === "Select Plan") {
+                            setCurrentScheme({ value: "" });
+                          }
+                          setCurrentPlan(data);
+                          setPageNo(1);
+                        }}
                       />
                     </FormGroup>
                   </Col>
@@ -284,6 +300,7 @@ const Employees = (props) => {
                         value={currentScheme}
                         onChange={(data) => {
                           setCurrentScheme(data);
+                          setPageNo(1);
                         }}
                       />
                     </FormGroup>
@@ -293,6 +310,7 @@ const Employees = (props) => {
             </Card>
             <Table
               showFilter={false}
+              pageNo={pageNo}
               data={data}
               totalCount={totalCount}
               addHandler={newEmployee}

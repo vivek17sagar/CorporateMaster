@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -16,6 +16,7 @@ import InputPasswordToggle from "@components/input-password-toggle";
 
 export const OTPInput = (props) => {
   const [otp, setOtp] = useState("");
+
   return (
     <div>
       <Modal className="modal-dialog-centered" isOpen={true}>
@@ -25,6 +26,7 @@ export const OTPInput = (props) => {
               <FormGroup>
                 <Label className="mb-0">Enter OTP</Label>
                 <InputPasswordToggle
+                  id="otpInput"
                   name="otp"
                   value={otp}
                   onChange={(c) => {

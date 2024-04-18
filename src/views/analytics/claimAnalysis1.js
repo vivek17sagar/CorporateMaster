@@ -150,7 +150,6 @@ const ClaimAnalysis1 = () => {
     },
   ];
 
-  console.log("particularData ==> ", particularData);
   const ratioSeries = [
     {
       data: [700, 350, 480],
@@ -194,7 +193,7 @@ const ClaimAnalysis1 = () => {
           {/* <ApexBarChart height={200} inputSeries={ratioSeries} categories={['YTD Ratio', ['Ratio on Earned', 'Premium'], 'EOP Ratio']} title={'Claim Ratios'}></ApexBarChart> */}
         </Col>
         <Col
-          sm="6"
+          xs="12"
           lg="6"
           style={{
             overflowY: "scroll",

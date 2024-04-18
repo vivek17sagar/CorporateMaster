@@ -32,14 +32,14 @@ const DemographicSpouseRatio = (props) => {
       })
     ).catch(noop);
     trackPromise(
-      apiConfig
-        .post("/dashboardemployeechildratio")
-        .then((data) => setEmpChildRatio(data[0]))
+      apiConfig.post("/dashboardemployeechildratio").then((data) => {
+        setEmpChildRatio(data[0]);
+      })
     ).catch(noop);
     trackPromise(
-      apiConfig
-        .post("/dashboardemployeedependentratio")
-        .then((data) => setEmpDepRatio(data[0]))
+      apiConfig.post("/dashboardemployeedependentratio").then((data) => {
+        setEmpDepRatio(data[0]);
+      })
     ).catch(noop);
   }, []);
 
@@ -74,19 +74,19 @@ const DemographicSpouseRatio = (props) => {
       {
         key: "Employee Spouse Ratio",
         value: `${empSpouseRatio.employeepercentage} : ${empSpouseRatio.spousepercentage}`,
-        progress: "60",
+        progress: ` ${empSpouseRatio.spousepercentage}`,
         color: "warning",
       },
       {
         key: "Employee Child Ratio",
         value: `${empChildRatio.employeepercentage} : ${empChildRatio.childpercentage}`,
-        progress: "40",
+        progress: `${empChildRatio.childpercentage}`,
         color: "primary",
       },
       {
         key: "Employee Dependents Ratio",
         value: `${empDepRatio.employeepercentage} : ${empDepRatio.dependentpercentage}`,
-        progress: "90",
+        progress: `${empDepRatio.dependentpercentage}`,
         color: "success",
       },
     ]);

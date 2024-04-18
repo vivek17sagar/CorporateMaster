@@ -77,10 +77,14 @@ const Claims = () => {
             </NavLink>
           </NavItem>
         </Nav>
+
+        {/* Active Admission */}
         <TabContent className="py-50" activeTab={active}>
           <TabPane tabId="activeAdmission">
             <ActiveAdmission />
           </TabPane>
+
+          {/* Past Claims */}
           <TabPane tabId="pastClaims">
             <PastClaims
               primary={colors.primary.main}
@@ -89,6 +93,8 @@ const Claims = () => {
               success={colors.success.main}
             ></PastClaims>
           </TabPane>
+
+          {/* Analysis */}
           <TabPane tabId="analysis">
             <Analysis></Analysis>
           </TabPane>

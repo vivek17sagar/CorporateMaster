@@ -103,6 +103,10 @@ const ActiveAdmission = () => {
     //     })
     //   }])
     // })
+
+    return () => {
+      setMonthwiseData([]);
+    };
   }, []);
 
   useEffect(() => {
@@ -125,6 +129,11 @@ const ActiveAdmission = () => {
           setActiveAdmissionData([]);
         })
     );
+
+    return () => {
+      setActiveAdmissionData([]);
+      setTotalPages(0);
+    };
   }, [filter, currentPage, rowPerPage]);
 
   const series = [

@@ -419,7 +419,6 @@ const ClaimAnalysis3 = () => {
               (matchingCompanyObj && matchingCompanyObj.claimAmount) || 0,
           };
         });
-        // console.log('---cost all', x);
 
         if (x === undefined) {
           setBandWiseClaimsData([]);

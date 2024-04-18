@@ -85,6 +85,15 @@ const Analysis = () => {
       show: true,
       position: "bottom",
     },
+    colors: [
+      "#007bff",
+      "#28a745",
+      "#6f42c1",
+      "#ffc107",
+      "#17a2b8",
+      "#dc3545",
+      "#fd7e14",
+    ],
     plotOptions: {
       radialBar: {
         hollow: {
@@ -109,25 +118,19 @@ const Analysis = () => {
             fontWeight: "500",
 
             formatter: (a) => {
-              return diseases
-                .map((d) => Number(d.amount.replace(/,/g, "")))
-                .reduce((a, b) => {
-                  return a + b;
-                }, 0);
+              // return diseases
+              //   .map((d) => Number(d.amount.replace(/,/g, "")))
+              //   .reduce((a, b) => {
+              //     return a + b;
+              //   }, 0);
+
+              return "4000";
             },
           },
         },
       },
     },
-    colors: [
-      "#007bff",
-      "#28a745",
-      "#6f42c1",
-      "#ffc107",
-      "#17a2b8",
-      "#dc3545",
-      "#fd7e14",
-    ],
+
     stroke: {
       lineCap: "round",
     },
@@ -186,7 +189,7 @@ const Analysis = () => {
                 ?.reduce((a, b) => {
                   return a + b;
                 }, 0);
-              setDiseases(commonDiseases);
+              // setDiseases(commonDiseases);
               setSeries(
                 commonDiseases?.map((d) =>
                   (
@@ -214,6 +217,28 @@ const Analysis = () => {
           }
         })
     );
+
+    return () => {
+      setMonthwiseSeries([
+        {
+          data: [],
+        },
+      ]);
+      setMonthwiseCategories([]);
+      setFamilySeries([
+        {
+          data: [],
+        },
+      ]);
+      setAgeGroupCategories([]);
+      setAgeGroupSeries([
+        {
+          data: [],
+        },
+      ]);
+      setDiseases([]);
+      setSeries([]);
+    };
   }, []);
 
   const getOptions = () => commonDiseaseOptions;

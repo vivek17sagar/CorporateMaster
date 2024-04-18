@@ -86,6 +86,11 @@ const ActiveAdmissions = (props) => {
         setData(data);
       })
     );
+
+    return () => {
+      setSeries([0, 0, 0, 0]);
+      setData(null);
+    };
   }, []);
 
   const renderChartInfo = () => {
