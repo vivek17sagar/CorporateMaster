@@ -173,8 +173,8 @@ const Demographics1 = (props) => {
     dataLabels: {
       enabled: true,
       // formatter(val, opt) {
-      //     return `${parseInt(val)}`
-      // }
+      //   return `${parseInt(val)}`;
+      // },
     },
 
     legend: { show: true, position: "bottom" },

@@ -66,6 +66,10 @@ const Policies = (props) => {
         setSelectedCat(data[0]);
       })
     );
+    return () => {
+      setPolicyGenderCount([]);
+      setSelectedCat(null);
+    };
   }, []);
 
   useEffect(() => {
@@ -84,6 +88,9 @@ const Policies = (props) => {
           console.error("Policy Category Data Not Available");
         })
     );
+    return () => {
+      setPolicyCategoryData([]);
+    };
   }, []);
 
   useEffect(() => {

@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Card, CardBody } from "reactstrap";
 
 const StatsHorizontal = ({
-  changeSelectedCardColor,
-  handleClickOnComponent,
+  changeSelectedCardColor = undefined,
+  handleClickOnComponent = () => {},
   icon,
   bgColor,
   color,

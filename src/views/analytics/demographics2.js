@@ -59,8 +59,8 @@ const Demographics2 = (props) => {
       center: true,
     },
     {
-      name: "PARENT",
-      selector: "PARENT",
+      name: "DEPENDENT",
+      selector: "DEPENDENT",
       sortable: true,
       minWidth: "40px",
       center: true,
@@ -70,7 +70,12 @@ const Demographics2 = (props) => {
       sortable: true,
       center: true,
       cell: (row) => {
-        return (row.EMPLOYEE || 0) + (row.SPOUSE || 0);
+        return (
+          (row.EMPLOYEE || 0) +
+          (row.SPOUSE || 0) +
+          (row["CHILD"] || 0) +
+          (row["DEPENDENT"] || 0)
+        );
       },
       // ,
       // minWidth: '175px'
@@ -108,7 +113,6 @@ const Demographics2 = (props) => {
             };
           }
         });
-
         const result = Object?.entries(groups)?.map(([key, value]) => {
           return { ageGroup: key, ...value };
         });

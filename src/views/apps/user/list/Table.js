@@ -85,7 +85,7 @@ const CustomHeader = ({
           xl="6"
           className="d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pr-lg-1 p-0 mt-lg-0 mt-1"
         >
-          {hideSearchOption !== true && (
+          {hideSearchOption !== true && false && (
             <div className="d-flex align-items-center mb-sm-0 mb-1 mr-1">
               <Label className="mb-0" for="search-invoice">
                 Search:
@@ -120,13 +120,13 @@ const UsersList = (props, ref) => {
 
   // ** States
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (filterValueFromStore) {
-      setCurrentPage(1);
+      // setCurrentPage(1);
       setRowsPerPage(10);
     }
   }, [filterValueFromStore]);
@@ -147,14 +147,14 @@ const UsersList = (props, ref) => {
       props?.updatePageNumber(page.selected + 1);
     }
 
-    setCurrentPage(page.selected + 1);
+    // setCurrentPage(page.selected + 1);
   };
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
     const value = parseInt(e?.currentTarget?.value);
 
-    setCurrentPage(1);
+    // setCurrentPage(1);
     setRowsPerPage(value);
 
     if (props?.handlePagination) {
@@ -196,7 +196,7 @@ const UsersList = (props, ref) => {
         nextLabel={""}
         pageCount={count || 1}
         activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+        forcePage={props?.pageNo !== 0 ? props.pageNo - 1 : 0}
         onPageChange={(page) => onPageChange(page)}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}

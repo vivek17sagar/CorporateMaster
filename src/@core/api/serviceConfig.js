@@ -24,7 +24,7 @@ function getDecryptedValue(str) {
           },
         })
         .then((result) => {
-          str = result.data.result.decryptionValue;
+          str = result?.data?.result?.decryptionValue;
           res(str);
           flag = false;
         })
@@ -47,7 +47,7 @@ function getDecryptedValue(str) {
   return promise;
 }
 
-// Imp
+// Nice
 export function parseEncryptedData(data) {
   let promise;
   if (Array.isArray(data)) {

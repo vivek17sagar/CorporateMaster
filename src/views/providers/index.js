@@ -43,6 +43,11 @@ import {
   Button,
 } from "reactstrap";
 
+import clinic from "../../assets/images/icons/clinic.jpg";
+import doctor from "../../assets/images/icons/doctor.jpg";
+import pharmacy from "../../assets/images/icons/pharmacy.jpg";
+
+import others from "../../assets/images/icons/others.jpg";
 const CardComponent = ({ data }) => {
   return data.map((obj) => {
     return (
@@ -180,10 +185,15 @@ const Providers = () => {
     labProviderCount: 0,
     clinicProviderCount: 0,
     doctorProviderCount: 0,
+    otherProviderCount: 0,
     pharmacyProviderCount: 0,
   });
-  const [deafultProviderNameValue, setDefaultProviderNameValue] = useState("");
-  const [providerName, setProviderName] = useState("");
+  const [deafultProviderNameValue, setDefaultProviderNameValue] = useState({
+    providerName: "",
+    countyName: "",
+    cityName: "",
+  });
+  const [finalSearchValues, setFinalSearchValues] = useState(null);
   const [location, setLocation] = useState([]);
   // const [providerTypes, setProviderTypes] = useState([]);
   const netwrokOptions = [
@@ -269,7 +279,7 @@ const Providers = () => {
 
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCureentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(9);
 
   const [filterChange, setFilterChnage] = useState(false);
   const [changeSelectedCardColor, setSelectedCardColor] = useState("Providers");
@@ -334,7 +344,9 @@ const Providers = () => {
           .post("/blacklistProviderdetails", {
             pageNo: currentPage - 1,
             pageSize: pageSize,
-            providerName: providerName,
+            providerName: finalSearchValues?.providerName || "",
+            countyName: finalSearchValues?.countyName || "",
+            cityName: finalSearchValues?.cityName || "",
             providerTypeID: selectedProviderType?.value || "",
           })
           .then((data) => {
@@ -355,7 +367,9 @@ const Providers = () => {
           .post("/activeProviderdetails", {
             pageNo: currentPage - 1,
             pageSize: pageSize,
-            providerName: providerName,
+            providerName: finalSearchValues?.providerName || "",
+            countyName: finalSearchValues?.countyName || "",
+            cityName: finalSearchValues?.cityName || "",
             providerTypeID: selectedProviderType?.value || "",
           })
           .then((data) => {
@@ -371,7 +385,7 @@ const Providers = () => {
           .catch(() => setProviderData([]))
       ).catch(noop);
     }
-  }, [selectedProviderType, currentPage, pageSize, providerName]);
+  }, [selectedProviderType, currentPage, pageSize, finalSearchValues]);
 
   const updatePageNumber = (pageNumber) => {
     setCureentPage(pageNumber);
@@ -422,7 +436,7 @@ const Providers = () => {
           return "D";
 
         case "Others":
-          return "U";
+          return "O";
       }
     })();
 
@@ -436,21 +450,29 @@ const Providers = () => {
     setCureentPage(value);
   };
 
-  const handleInputSearch = (event) => {
-    setDefaultProviderNameValue(event.target.value);
+  const handleInputSearch = (event, key) => {
+    setDefaultProviderNameValue((prevobj) => {
+      return {
+        ...prevobj,
+        [key]: event.target.value?.toUpperCase(),
+      };
+    });
   };
 
   const handleSearchButton = () => {
     // Here we can set the Provider name
-
-    setProviderName(deafultProviderNameValue.trim());
+    setFinalSearchValues({ ...deafultProviderNameValue });
   };
   const handleRestButton = () => {
     // Here we can reset the Provider name
-    setDefaultProviderNameValue("");
-    setProviderName("");
+    setDefaultProviderNameValue({
+      providerName: "",
+      countyName: "",
+      cityName: "",
+    });
+    setFinalSearchValues(null);
 
-    const input = document.getElementById("searchInput");
+    const input = document.getElementById("searchInputProvider");
     input.focus();
   };
   const stats = [
@@ -507,7 +529,7 @@ const Providers = () => {
       <StatsHorizontal
         changeSelectedCardColor={changeSelectedCardColor}
         handleClickOnComponent={handleClickOnComponent}
-        icon={<img src={labs} height="35" width="35" />}
+        icon={<img src={clinic} height="35" width="35" />}
         color="success"
         stats={statsData.clinicProviderCount + ""}
         statTitle="Clinic"
@@ -519,9 +541,9 @@ const Providers = () => {
       <StatsHorizontal
         changeSelectedCardColor={changeSelectedCardColor}
         handleClickOnComponent={handleClickOnComponent}
-        icon={<img src={labs} height="35" width="35" />}
+        icon={<img src={doctor} height="35" width="35" />}
         color="success"
-        stats={statsData.doctorProviderCount + ""}
+        stats={statsData?.doctorProviderCount + ""}
         statTitle="Doctor"
       />
     </Col>,
@@ -531,7 +553,7 @@ const Providers = () => {
       <StatsHorizontal
         changeSelectedCardColor={changeSelectedCardColor}
         handleClickOnComponent={handleClickOnComponent}
-        icon={<img src={labs} height="35" width="35" />}
+        icon={<img src={pharmacy} height="35" width="35" />}
         color="success"
         stats={statsData?.pharmacyProviderCount + ""}
         statTitle="Pharmacy"
@@ -543,9 +565,13 @@ const Providers = () => {
       <StatsHorizontal
         changeSelectedCardColor={changeSelectedCardColor}
         handleClickOnComponent={handleClickOnComponent}
-        icon={<img src={labs} height="35" width="35" />}
+        icon={<img src={others} height="35" width="35" />}
         color="success"
-        stats={statsData?.pharmacyProviderCount + ""}
+        stats={
+          statsData?.otherIndividualProviderCount +
+          statsData?.otherProviderCount +
+          ""
+        }
         statTitle="Others"
       />
     </Col>,
@@ -571,27 +597,6 @@ const Providers = () => {
             <BreadcrumbItem tag="li">Providers </BreadcrumbItem>
           </Breadcrumb>
         </div>
-
-        <div className="mr-2">
-          <span
-            className={classnames("cursor-pointer", index === 0 && "disabled")}
-            onClick={() => setIndex(index - 1)}
-            style={{ fontSize: "24px" }}
-          >
-            <strong>&lt;</strong>
-          </span>
-
-          <span
-            className={classnames(
-              "cursor-pointer pl-1",
-              (index + 5) % stats?.length === 0 && "disabled"
-            )}
-            onClick={() => setIndex(index + 1)}
-            style={{ fontSize: "24px" }}
-          >
-            <strong>&gt;</strong>
-          </span>
-        </div>
       </Row>
 
       <Row
@@ -607,11 +612,26 @@ const Providers = () => {
         }}
       >
         <Input
-          id="searchInput"
+          id="searchInputProvider"
           placeholder="Enter Provider Name"
           style={{ width: "250px" }}
-          value={deafultProviderNameValue}
-          onChange={(e) => handleInputSearch(e)}
+          value={deafultProviderNameValue?.providerName}
+          onChange={(e) => handleInputSearch(e, "providerName")}
+        />
+
+        <Input
+          id="searchInputCounty"
+          placeholder="Enter County Name"
+          style={{ width: "250px" }}
+          value={deafultProviderNameValue?.countyName}
+          onChange={(e) => handleInputSearch(e, "countyName")}
+        />
+        <Input
+          id="searchInputCity"
+          placeholder="Enter City Name"
+          style={{ width: "250px" }}
+          value={deafultProviderNameValue?.cityName}
+          onChange={(e) => handleInputSearch(e, "cityName")}
         />
 
         <button
@@ -664,6 +684,59 @@ const Providers = () => {
             : stats?.length
         )}
         {/* Stats With Icons Horizontal */}
+
+        <div
+          className="mr-2"
+          style={{
+            marginBottom: "20px",
+            width: "5%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minWidth: "150px",
+          }}
+        >
+          {/* Previous Button */}
+          <span
+            className={classnames("cursor-pointer", index === 0 && "disabled")}
+            onClick={() => setIndex(index - 1)}
+            style={{
+              fontSize: "24px",
+              width: "50px",
+              height: "50px",
+              border: "1px solid #7b6ff1",
+              borderRadius: "50px",
+              padding: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <strong>&lt;</strong>
+          </span>
+
+          {/* Next Button */}
+          <span
+            className={classnames(
+              "cursor-pointer pl-1",
+              (index + 5) % stats?.length === 0 && "disabled"
+            )}
+            onClick={() => setIndex(index + 1)}
+            style={{
+              fontSize: "24px",
+              width: "50px",
+              height: "50px",
+              border: "1px solid #7b6ff1",
+              borderRadius: "50px",
+              padding: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <strong>&gt;</strong>
+          </span>
+        </div>
       </Row>
       {/* Below Section Shows Details Related To The Clicked Card */}
       <Row
@@ -671,7 +744,7 @@ const Providers = () => {
           display: providerData?.length > 0 && "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
           overflowY: "scroll",
-          height: "560px",
+          height: "500px",
           justifyItems: "center",
         }}
         className="ul_ResponsiveLayout_Component provider_card"

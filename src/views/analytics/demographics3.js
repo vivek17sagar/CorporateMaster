@@ -156,14 +156,40 @@ const Demographics3 = (props) => {
             title="Composition Of Covered Members"
             inputOptions={inputOptions}
             inputSeries={data}
-            height={520}
+            height={500}
           ></ApexBarChart>
         </Col>
 
         <Col xs="12" lg="6">
-          {coveredChildAgeGroupData.length ? (
+          {coveredChildAgeGroupData?.length > 0 && (
+            <Row>
+              <Col xs="12" lg="12">
+                {" "}
+                <ApexBarChart
+                  height={190}
+                  inputSeries={coveredChildAgeGroupData}
+                  categories={coveredChildAgeGroups}
+                  title={"Age-Band Wise Distrbution Of Covered Children"}
+                ></ApexBarChart>
+              </Col>
+            </Row>
+          )}
+
+          {coveredDepAgeGroupData?.length > 0 && (
+            <Row>
+              <Col xs="12" lg="12">
+                <ApexBarChart
+                  height={190}
+                  inputSeries={coveredDepAgeGroupData}
+                  categories={coveredDepAgeGroups}
+                  title={"Age-Band Wise Distrbution Of Covered Dependents"}
+                ></ApexBarChart>
+              </Col>
+            </Row>
+          )}
+          {/* {coveredChildAgeGroupData?.length ? (
             <ApexBarChart
-              height={150}
+              height={250}
               inputSeries={coveredChildAgeGroupData}
               categories={coveredChildAgeGroups}
               title={"Age-Band Wise Distrbution Of Covered Children"}
@@ -179,13 +205,8 @@ const Demographics3 = (props) => {
                 No Data Found
               </CardBody>
             </Card>
-          )}
-          <ApexBarChart
-            height={150}
-            inputSeries={coveredDepAgeGroupData}
-            categories={coveredDepAgeGroups}
-            title={"Age-Band Wise Distrbution Of Covered Dependents"}
-          ></ApexBarChart>
+          )} */}
+
           {/* <ApexBarChart height={250} categories={['36-45 Years', '46-55 Years', '56-65 Years', '66-70 Years', '70 Years & above'].reverse()} title={'Age-Band wise distrbution of covered Parents'}></ApexBarChart> */}
         </Col>
       </Row>
