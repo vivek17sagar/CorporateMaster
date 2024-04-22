@@ -6,6 +6,7 @@ import { noop } from "lodash";
 
 const DemographicSpouseTile = (props) => {
   const { key, value, color, progress } = props?.data;
+  console.log(props)
 
   return (
     <div className="mt-2 mb-50">
@@ -64,11 +65,13 @@ const DemographicSpouseRatio = (props) => {
     },
     {
       key: "Employee All Department",
-      value: "1 : 0.80",
+      value2: "1 : 0.80",
       progress: "20",
       color: "danger",
     },
   ]);
+
+  console.log(empChildRatio)
   useEffect(() => {
     setRatioData([
       {

@@ -27,6 +27,7 @@ import Table from "../apps/user/list/Table";
 import { trackPromise } from "react-promise-tracker";
 import { handleFilterTabs } from "../../redux/actions/handleFilter";
 import { useDispatch } from "react-redux";
+import ReactPaginate from "react-paginate";
 
 const Employees = (props) => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const Employees = (props) => {
 
   const [empName, setEmpName] = useState("");
   const [perPage, setPerPage] = useState(10);
-  const [pageNo, setPageNo] = useState(1);
+  const [pageNo, setPageNo] = useState(0);
   const [empCode, setEmpCode] = useState("");
   const [data, setData] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -123,7 +124,7 @@ const Employees = (props) => {
         .post(
           "/corporateemployees",
           {
-            pageNo: pageNo - 1,
+            pageNo: pageNo,
             pageSize: perPage,
             planID: currentPlan?.value,
             employeeCode: empCode,
@@ -162,8 +163,13 @@ const Employees = (props) => {
   };
 
   const handlePagination = (data) => {
+    if(data.perPage){
     setPerPage(data?.perPage);
-    setPageNo(data?.page);
+    setPageNo(0)
+  }
+    if(data.selected != undefined){
+    setPageNo(data?.selected);
+  }
   };
 
   const updateRowData = (rowPerPage) => {
@@ -290,7 +296,7 @@ const Employees = (props) => {
                   </Col>
                   <Col md="3">
                     <FormGroup>
-                      <Label>Select Scheme</Label>
+                      <Label>Select Category</Label>
                       <Select
                         theme={selectThemeColors}
                         isClearable={false}
@@ -316,6 +322,35 @@ const Employees = (props) => {
               addHandler={newEmployee}
               handlePagination={handlePagination}
               updateRowData={updateRowData}
+            />
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel=" "
+              activeClassName="active"
+              onPageChange={handlePagination}
+              // pageRangeDisplayed={1}
+              pageCount={totalCount}
+              // pageCount={pageCount}
+              previousLabel=" "
+              renderOnZeroPageCount={null}
+              // onPageActive={currentPage}
+
+              // previousLabel={""}
+              // nextLabel={"next"}
+              // pageRangeDisplayed={5}
+              // pageCount={2}
+              // activeClassName="active"
+              // onPageChange={handlepage2} // Call the handlePageChange function when page changes
+              // renderOnZeroPageCount={null}
+              pageClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              nextClassName={"page-item next"}
+              previousClassName={"page-item prev"}
+              previousLinkClassName={"page-link"}
+              pageLinkClassName={"page-link"}
+              containerClassName={
+                "pagination react-paginate justify-content-end my-2 pr-1"
+              }
             />
           </div>
         </Col>

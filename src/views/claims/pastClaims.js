@@ -7,13 +7,16 @@ import { apiConfig } from "../../@core/api/serviceConfig";
 import InvoiceList from "../apps/invoice/list";
 import ClaimsGrid from "./claimsGrid";
 import FilterPanel from "./filterPanel";
+import ReactPaginate from "react-paginate";
 
 const PastClaims = (props) => {
   const [diseases, setDiseases] = useState([]);
 
   const [pastClaimsData, setPastClaimsData] = useState([]);
   const [rcclData, setRCCLData] = useState([]);
-
+  
+  const [perPage, setPerPage] = useState(10);
+  const [pageNo, setPageNo] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCureentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -73,7 +76,7 @@ const PastClaims = (props) => {
       apiConfig
         .post("/pastClaim", {
           ...filter,
-          pageNo: currentPage - 1,
+          pageNo: pageNo,
           pageSize: pageSize,
         })
         .then((data) => {
@@ -90,7 +93,7 @@ const PastClaims = (props) => {
       setPastClaimsData([]);
       setTotalPages(0);
     };
-  }, [filter, currentPage, pageSize]);
+  }, [filter, currentPage, pageSize,pageNo]);
 
   const updatePageNumber = (pageNumber) => {
     setCureentPage(pageNumber);
@@ -294,7 +297,15 @@ const PastClaims = (props) => {
     //   })
     // );
   };
-
+  const handlePagination = (data) => {
+    if(data.perPage){
+    setPerPage(data?.perPage);
+    setPageNo(0)
+  }
+    if(data.selected != undefined){
+    setPageNo(data?.selected);
+  }
+  };
   return (
     <div>
       <FilterPanel onFilterChange={onFilterChange}></FilterPanel>
@@ -319,7 +330,7 @@ const PastClaims = (props) => {
         <Col sm="12" lg="6">
           <Card>
             <CardHeader className="align-items-end">
-              <CardTitle>Top Benefits Utilized</CardTitle>
+              <CardTitle>Top Ailments Utilized</CardTitle>
             </CardHeader>
             <CardBody>
               <Chart
@@ -340,6 +351,35 @@ const PastClaims = (props) => {
             updatePageNumber={updatePageNumber}
             updateRowData={updateRowData}
           />
+             <ReactPaginate
+              breakLabel="..."
+              nextLabel=" "
+              activeClassName="active"
+              onPageChange={handlePagination}
+              // pageRangeDisplayed={1}
+              pageCount={totalPages}
+              // pageCount={pageCount}
+              previousLabel=" "
+              renderOnZeroPageCount={null}
+              // onPageActive={currentPage}
+
+              // previousLabel={""}
+              // nextLabel={"next"}
+              // pageRangeDisplayed={5}
+              // pageCount={2}
+              // activeClassName="active"
+              // onPageChange={handlepage2} // Call the handlePageChange function when page changes
+              // renderOnZeroPageCount={null}
+              pageClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              nextClassName={"page-item next"}
+              previousClassName={"page-item prev"}
+              previousLinkClassName={"page-link"}
+              pageLinkClassName={"page-link"}
+              containerClassName={
+                "pagination react-paginate justify-content-end my-2 pr-1"
+              }
+            />
         </Col>
       </Row>
     </div>

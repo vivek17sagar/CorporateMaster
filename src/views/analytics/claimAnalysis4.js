@@ -11,6 +11,7 @@ import LineChart from "../charts/recharts/LineChart";
 import { apiConfig } from "../../@core/api/serviceConfig";
 import { trackPromise } from "react-promise-tracker";
 import Table from "../apps/user/list/Table";
+import ReactPaginate from "react-paginate";
 const ClaimAnalysis4 = () => {
   const claimCauseColumns = [
     {
@@ -50,6 +51,8 @@ const ClaimAnalysis4 = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [perPage, setPerPage] = useState(10);
+  const [pageNo, setPageNo] = useState(0);
   const [claimCauseData, setClaimCauseData] = useState([
     // { category: "Diseases of the digestive system", noOfClaims: '12', claimCost: '428,062', claimPercent: '25%', total: '22%' },
     // { category: "Diseases of the genitourinary system", noOfClaims: '7', claimCost: '336,039', claimPercent: '15%', total: '18%' },
@@ -211,13 +214,22 @@ const ClaimAnalysis4 = () => {
       data: [85, 100, 30, 40, 95, 35],
     },
   ];
+  const handlePagination = (data) => {
+    if(data.perPage){
+    setPerPage(data?.perPage);
+    setPageNo(0)
+  }
+    if(data.selected != undefined){
+    setPageNo(data?.selected);
+  }
+  };
 
   useEffect(() => {
     trackPromise(
       apiConfig
         .post("/commonDiseases", {
-          pageNo: currentPage - 1,
-          pageSize: pageSize,
+          pageNo: pageNo,
+          pageSize: perPage,
         })
         .then((data) => {
           if (data) {
@@ -226,7 +238,7 @@ const ClaimAnalysis4 = () => {
           }
         })
     ).catch(noop);
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize,pageNo]);
 
   const updatePageNumber = (pageNumber) => {
     console.log("pageNumber ==> ", pageNumber);
@@ -262,6 +274,35 @@ const ClaimAnalysis4 = () => {
           updateRowData={updateRowData}
           totalCount={totalPages}
         />
+         <ReactPaginate
+              breakLabel="..."
+              nextLabel=" "
+              activeClassName="active"
+              onPageChange={handlePagination}
+              // pageRangeDisplayed={1}
+              pageCount={totalPages}
+              // pageCount={pageCount}
+              previousLabel=" "
+              renderOnZeroPageCount={null}
+              // onPageActive={currentPage}
+
+              // previousLabel={""}
+              // nextLabel={"next"}
+              // pageRangeDisplayed={5}
+              // pageCount={2}
+              // activeClassName="active"
+              // onPageChange={handlepage2} // Call the handlePageChange function when page changes
+              // renderOnZeroPageCount={null}
+              pageClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              nextClassName={"page-item next"}
+              previousClassName={"page-item prev"}
+              previousLinkClassName={"page-link"}
+              pageLinkClassName={"page-link"}
+              containerClassName={
+                "pagination react-paginate justify-content-end my-2 pr-1"
+              }
+            />
       </Card>
       {/* <Card>
                 <CardHeader>

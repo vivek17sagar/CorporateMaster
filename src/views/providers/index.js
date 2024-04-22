@@ -48,6 +48,7 @@ import doctor from "../../assets/images/icons/doctor.jpg";
 import pharmacy from "../../assets/images/icons/pharmacy.jpg";
 
 import others from "../../assets/images/icons/others.jpg";
+import ReactPaginate from "react-paginate";
 const CardComponent = ({ data }) => {
   return data.map((obj) => {
     return (
@@ -280,6 +281,8 @@ const Providers = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCureentPage] = useState(1);
   const [pageSize, setPageSize] = useState(9);
+  const [perPage, setPerPage] = useState(10);
+  const [pageNo, setPageNo] = useState(0);
 
   const [filterChange, setFilterChnage] = useState(false);
   const [changeSelectedCardColor, setSelectedCardColor] = useState("Providers");
@@ -365,8 +368,8 @@ const Providers = () => {
       trackPromise(
         apiConfig
           .post("/activeProviderdetails", {
-            pageNo: currentPage - 1,
-            pageSize: pageSize,
+            pageNo: pageNo,
+            pageSize: perPage,
             providerName: finalSearchValues?.providerName || "",
             countyName: finalSearchValues?.countyName || "",
             cityName: finalSearchValues?.cityName || "",
@@ -385,7 +388,7 @@ const Providers = () => {
           .catch(() => setProviderData([]))
       ).catch(noop);
     }
-  }, [selectedProviderType, currentPage, pageSize, finalSearchValues]);
+  }, [selectedProviderType, currentPage, pageNo, finalSearchValues]);
 
   const updatePageNumber = (pageNumber) => {
     setCureentPage(pageNumber);
@@ -457,6 +460,13 @@ const Providers = () => {
         [key]: event.target.value?.toUpperCase(),
       };
     });
+  };
+
+
+  const handlePagination = (data) => {
+    console.log(data?.selected)
+    // setPerPage(data?.perPage);
+    setPageNo(data?.selected);
   };
 
   const handleSearchButton = () => {
@@ -776,11 +786,40 @@ const Providers = () => {
             right: "45px",
           }}
         >
-          <MainPaginationComponent
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel=" "
+            activeClassName="active"
+            onPageChange={handlePagination}
+            // pageRangeDisplayed={1}
+            pageCount={totalPages}
+            // pageCount={pageCount}
+            previousLabel=" "
+            renderOnZeroPageCount={null}
+            // onPageActive={currentPage}
+
+            // previousLabel={""}
+            // nextLabel={"next"}
+            // pageRangeDisplayed={5}
+            // pageCount={2}
+            // activeClassName="active"
+            // onPageChange={handlepage2} // Call the handlePageChange function when page changes
+            // renderOnZeroPageCount={null}
+            pageClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            nextClassName={"page-item next"}
+            previousClassName={"page-item prev"}
+            previousLinkClassName={"page-link"}
+            pageLinkClassName={"page-link"}
+            containerClassName={
+              "pagination react-paginate justify-content-end my-2 pr-1"
+            }
+          />
+          {/* <MainPaginationComponent
             totalPages={totalPages}
             handlePaginationBehaviour={handlePaginationBehaviour}
             currentPage={currentPage}
-          />
+          /> */}
         </Row>
       )}
       {/* <Card>

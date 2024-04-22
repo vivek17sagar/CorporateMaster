@@ -59,6 +59,8 @@ const Policies = () => {
   const [requestPolicyModal, setRequestPolicyModal] = useState(false);
   const [index, setIndex] = useState(0);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCureentPage] = useState(1);
 
   const handlePolicyPaginate = (metadata) => {
     setPolicyData([

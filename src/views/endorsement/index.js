@@ -32,6 +32,7 @@ import { apiConfig } from "../../@core/api/serviceConfig";
 import { trackPromise } from "react-promise-tracker";
 import { noop } from "lodash";
 import { error } from "jquery";
+import ReactPaginate from "react-paginate";
 
 const Endorsement = () => {
   const history = useHistory();
@@ -40,6 +41,8 @@ const Endorsement = () => {
   const [endorsementMonthCount, setEndorsementMonthCount] = useState([]);
   const [index, setIndex] = useState(0);
   const [newEndorsementType, setNewEndorsementType] = useState(undefined);
+  const [perPage, setPerPage] = useState(10);
+  const [pageNo, setPageNo] = useState(0);
   const [showNewEndorsement, setShowNewEndorsement] = useState(false);
   const [showNewUnpaidEndorsement, setShowNewUnpaidEndorsement] =
     useState(false);
@@ -49,15 +52,15 @@ const Endorsement = () => {
 
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCureentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     // Table Data
     trackPromise(
       apiConfig
         .post("/corporateendorsmentmemberdetails", {
-          pageNo: 0,
-          pageSize: pageSize,
+          pageNo: pageNo,
+          pageSize: perPage,
         })
         .then((data) => {
           if (data) {
@@ -83,7 +86,8 @@ const Endorsement = () => {
           console.log(error);
         })
     ).catch(noop);
-  }, []);
+  }, [ pageNo,
+    perPage]);
 
   // Running Table Api when pageNumber get Chnages
   useEffect(() => {
@@ -91,8 +95,8 @@ const Endorsement = () => {
     trackPromise(
       apiConfig
         .post("/corporateendorsmentmemberdetails", {
-          pageNo: currentPage - 1,
-          pageSize: pageSize,
+          pageNo: pageNo,
+          pageSize: perPage,
         })
         .then((data) => {
           if (data) {
@@ -103,7 +107,7 @@ const Endorsement = () => {
           }
         })
     ).catch(noop);
-  }, [currentPage, pageSize]);
+  }, [currentPage, perPage]);
 
   const updatePageNumber = (pageNumber) => {
     setCureentPage(pageNumber);
@@ -249,6 +253,16 @@ const Endorsement = () => {
   // const getEndorsementMonth = () => {
   //     return endorsementMemberType.map(c => c.monthName)
   // }
+  const handlePagination = (data) => {
+    if(data.perPage){
+    setPerPage(data?.perPage);
+    setPageNo(0)
+  }
+    if(data.selected != undefined){
+    setPageNo(data?.selected);
+  }
+  };
+
   const getSeries = () => {
     return [
       {
@@ -305,7 +319,7 @@ const Endorsement = () => {
           return (
             <Col lg="3" sm="6" key={Math.floor(Math.random() * 10000000)}>
               <StatsHorizontal
-                icon={<img src={endorsement} height="25" width="20" />}
+                icon={<img src={i == "0" ? endorsement : i == "1" ? rejected : i == "2" ? inProcess : accepted} height="25" width="20" />}
                 color="primary"
                 stats={c.change.toString()}
                 statTitle={c.endorsmentType}
@@ -366,7 +380,37 @@ const Endorsement = () => {
               showFilter={false}
               totalCount={totalPages}
               addButtonLabel="New Endorsement"
+              handlePagination={handlePagination}
               addHandler={() => setShowNewEndorsement(true)}
+            />
+              <ReactPaginate
+              breakLabel="..."
+              nextLabel=" "
+              activeClassName="active"
+              onPageChange={handlePagination}
+              // pageRangeDisplayed={1}
+              pageCount={totalPages}
+              // pageCount={pageCount}
+              previousLabel=" "
+              renderOnZeroPageCount={null}
+              // onPageActive={currentPage}
+
+              // previousLabel={""}
+              // nextLabel={"next"}
+              // pageRangeDisplayed={5}
+              // pageCount={2}
+              // activeClassName="active"
+              // onPageChange={handlepage2} // Call the handlePageChange function when page changes
+              // renderOnZeroPageCount={null}
+              pageClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              nextClassName={"page-item next"}
+              previousClassName={"page-item prev"}
+              previousLinkClassName={"page-link"}
+              pageLinkClassName={"page-link"}
+              containerClassName={
+                "pagination react-paginate justify-content-end my-2 pr-1"
+              }
             />
           </div>
         </Col>

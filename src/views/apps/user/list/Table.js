@@ -120,7 +120,7 @@ const UsersList = (props, ref) => {
 
   // ** States
   const [searchTerm, setSearchTerm] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -134,21 +134,20 @@ const UsersList = (props, ref) => {
   // ** Function to toggle sidebar
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-  const onPageChange = (page) => {
-    if (props.handlePagination) {
-      props.handlePagination({
-        page: page.selected + 1,
-        perPage: rowsPerPage,
-        q: searchTerm,
-      });
-    }
+  // const onPageChange = (page) => {
+  //   if (props.handlePagination) {
+  //     props.handlePagination({
+  //       page: page.selected + 1,
+  //       perPage: rowsPerPage,
+  //       q: searchTerm,
+  //     });
+  //   }
 
-    if (props?.updatePageNumber) {
-      props?.updatePageNumber(page.selected + 1);
-    }
+  //   if (props?.updatePageNumber) {
+  //     props?.updatePageNumber(page.selected + 1);
+  //   }
 
-    // setCurrentPage(page.selected + 1);
-  };
+  // };
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
@@ -167,6 +166,20 @@ const UsersList = (props, ref) => {
       props?.updateRowData(value);
     }
   };
+
+  const handlePginationPerPage = (page) => {
+    if (props.handlePagination) {
+          props.handlePagination({
+            // page: page.selected + 1,
+            perPage: rowsPerPage,
+            q: searchTerm,
+          });
+        }
+
+    setCurrentPage(page.selected + 1);
+
+    
+  }
 
   // ** Function in get data on search query change
   const handleFilter = (val) => {
@@ -190,23 +203,38 @@ const UsersList = (props, ref) => {
   const CustomPagination = () => {
     const count = Number(Math.ceil(props?.totalCount / rowsPerPage));
 
+
     return (
       <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
-        pageCount={count || 1}
-        activeClassName="active"
-        forcePage={props?.pageNo !== 0 ? props.pageNo - 1 : 0}
-        onPageChange={(page) => onPageChange(page)}
-        pageClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        nextClassName={"page-item next"}
-        previousClassName={"page-item prev"}
-        previousLinkClassName={"page-link"}
-        pageLinkClassName={"page-link"}
-        containerClassName={
-          "pagination react-paginate justify-content-end my-2 pr-1"
-        }
+      breakLabel="..."
+      nextLabel=" "
+      activeClassName="active"
+      onPageChange={handlePginationPerPage}
+      // pageRangeDisplayed={1}
+      pageCount={props?.totalCount}
+      // pageCount={pageCount}
+      previousLabel=" "
+      renderOnZeroPageCount={null}
+      // onPageActive={currentPage}
+
+
+
+      // previousLabel={""}
+      // nextLabel={"next"}
+      // pageRangeDisplayed={5}
+      // pageCount={2}
+      // activeClassName="active"
+      // onPageChange={handlepage2} // Call the handlePageChange function when page changes
+      // renderOnZeroPageCount={null}
+      pageClassName={"page-item"}
+      nextLinkClassName={"page-link"}
+      nextClassName={"page-item next"}
+      previousClassName={"page-item prev"}
+      previousLinkClassName={"page-link"}
+      pageLinkClassName={"page-link"}
+      containerClassName={
+        "pagination react-paginate justify-content-end my-2 pr-1"
+      }
       />
     );
   };
@@ -315,12 +343,12 @@ const UsersList = (props, ref) => {
           noHeader={!(props.label || props.headerComponent)}
           pagination
           paginationServer
-          subHeader
+          // subHeader
           responsive
           columns={props.columns || columns}
           sortIcon={<ChevronDown />}
           className="react-dataTable"
-          paginationComponent={CustomPagination}
+          paginationComponent="false"
           data={(props.data && getFilteredData(props.data)) || []}
           subHeaderComponent={
             <CustomHeader
